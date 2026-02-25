@@ -37,7 +37,7 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   const [showCamera, setShowCamera] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
-  const [step, setStep] = useState(1); // 1 = details, 2 = photo
+  const [step, setStep] = useState(1);
 
   const update = (key, value) => {
     setForm((p) => ({ ...p, [key]: value }));
@@ -58,7 +58,6 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
     const e = validate();
     if (Object.keys(e).length > 0) {
       setErrors(e);
-      // Go to step with first error
       const stepOneFields = ["visitorName", "phone", "purpose", "whomToMeet"];
       const hasStep1Error = stepOneFields.some((f) => e[f]);
       if (hasStep1Error) setStep(1);
@@ -76,19 +75,16 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   };
 
   return (
-    <div
-      className="relative w-full h-full flex flex-col overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #0a0f1e 0%, #0d1530 60%, #111d42 100%)" }}
-    >
+    <div className="relative w-full h-full flex flex-col overflow-hidden">
       {/* BG blobs */}
       <div className="blob w-72 h-72 bg-indigo-800" style={{ top: "-10%", right: "-5%", animationDelay: "0s" }} />
-      <div className="blob w-56 h-56 bg-gold-500" style={{ bottom: "-5%", left: "0%", animationDelay: "2s" }} />
+      <div className="blob w-56 h-56" style={{ bottom: "-5%", left: "0%", animationDelay: "2s", background: "#FF6829" }} />
 
       {/* Grid */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: "linear-gradient(rgba(240,192,96,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(240,192,96,0.5) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(255,104,41,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,104,41,0.5) 1px, transparent 1px)",
           backgroundSize: "50px 50px",
         }}
       />
@@ -107,14 +103,14 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
         </button>
 
         <div className="text-center">
-          <h1 className="gold-shimmer font-display text-3xl font-bold">Visitor Check-In</h1>
-          <p className="text-white/40 font-body text-xs mt-0.5">Fill in your details to notify your host</p>
+          <h1 className="font-display text-3xl font-bold" style={{ color: "#FF6829" }}>Visitor Check-In</h1>
+          <p className="font-body text-xs mt-0.5" style={{ color: "#3D6BC0", opacity: 0.8 }}>Fill in your details to notify your host</p>
         </div>
 
         {/* Step indicator */}
         <div className="flex items-center gap-2">
           <StepDot active={step >= 1} label="1" done={step > 1} />
-          <div className="w-8 h-px" style={{ background: step > 1 ? "#f0c060" : "rgba(255,255,255,0.15)" }} />
+          <div className="w-8 h-px" style={{ background: step > 1 ? "#FF6829" : "rgba(255,255,255,0.15)" }} />
           <StepDot active={step >= 2} label="2" done={false} />
         </div>
       </div>
@@ -124,18 +120,16 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
         <div className="relative z-10 flex-1 overflow-y-auto custom-scroll px-8 pb-6">
           <div className="max-w-3xl mx-auto grid grid-cols-2 gap-4">
 
-            {/* Visitor Name */}
             <FormField label="Visitor Name" required error={errors.visitorName}>
               <input
                 type="text"
                 placeholder="Enter your full name"
                 value={form.visitorName}
                 onChange={(e) => update("visitorName", e.target.value)}
-                className={inputClass(errors.visitorName)}
+                style={inputStyle(errors.visitorName)}
               />
             </FormField>
 
-            {/* Phone */}
             <FormField label="Phone Number" required error={errors.phone}>
               <input
                 type="tel"
@@ -143,33 +137,30 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
                 value={form.phone}
                 maxLength={10}
                 onChange={(e) => update("phone", e.target.value.replace(/\D/, ""))}
-                className={inputClass(errors.phone)}
+                style={inputStyle(errors.phone)}
               />
             </FormField>
 
-            {/* Email */}
             <FormField label="Email Address" error={errors.email}>
               <input
                 type="email"
                 placeholder="your@email.com (optional)"
                 value={form.email}
                 onChange={(e) => update("email", e.target.value)}
-                className={inputClass(errors.email)}
+                style={inputStyle(errors.email)}
               />
             </FormField>
 
-            {/* Company */}
             <FormField label="Company / Organisation" error={errors.company}>
               <input
                 type="text"
                 placeholder="Your company name (optional)"
                 value={form.company}
                 onChange={(e) => update("company", e.target.value)}
-                className={inputClass(errors.company)}
+                style={inputStyle(errors.company)}
               />
             </FormField>
 
-            {/* Purpose */}
             <FormField label="Purpose of Visit" required error={errors.purpose}>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 {PURPOSES.map((p) => (
@@ -178,9 +169,10 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
                     onClick={() => update("purpose", p)}
                     className="text-left px-3 py-2.5 rounded-xl font-body text-sm transition-all duration-200 active:scale-95"
                     style={{
-                      background: form.purpose === p ? "rgba(240,192,96,0.15)" : "rgba(255,255,255,0.04)",
-                      border: form.purpose === p ? "1px solid rgba(240,192,96,0.5)" : "1px solid rgba(255,255,255,0.08)",
-                      color: form.purpose === p ? "#f0c060" : "rgba(255,255,255,0.6)",
+                      background: form.purpose === p ? "rgba(255,104,41,0.15)" : "rgba(255,255,255,0.92)",
+                      border: form.purpose === p ? "1.5px solid rgba(255,104,41,0.7)" : "1.5px solid rgba(61,107,192,0.4)",
+                      color: form.purpose === p ? "#FF6829" : "#3D6BC0",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
                     }}
                   >
                     {p}
@@ -189,7 +181,6 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
               </div>
             </FormField>
 
-            {/* Whom to Meet */}
             <FormField label="Person to Meet" required error={errors.whomToMeet}>
               <div className="flex flex-col gap-2 mt-1">
                 {EMPLOYEES.map((emp) => (
@@ -198,22 +189,23 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
                     onClick={() => update("whomToMeet", emp.id.toString())}
                     className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95"
                     style={{
-                      background: form.whomToMeet === emp.id.toString() ? "rgba(240,192,96,0.12)" : "rgba(255,255,255,0.04)",
-                      border: form.whomToMeet === emp.id.toString() ? "1px solid rgba(240,192,96,0.45)" : "1px solid rgba(255,255,255,0.08)",
+                      background: form.whomToMeet === emp.id.toString() ? "rgba(255,104,41,0.12)" : "rgba(255,255,255,0.92)",
+                      border: form.whomToMeet === emp.id.toString() ? "1.5px solid rgba(255,104,41,0.6)" : "1.5px solid rgba(61,107,192,0.4)",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
                     }}
                   >
                     <span className="text-2xl">{emp.avatar}</span>
                     <div className="text-left">
                       <p
                         className="font-body text-sm font-medium"
-                        style={{ color: form.whomToMeet === emp.id.toString() ? "#f0c060" : "rgba(255,255,255,0.75)" }}
+                        style={{ color: form.whomToMeet === emp.id.toString() ? "#FF6829" : "#3D6BC0" }}
                       >
                         {emp.name}
                       </p>
-                      <p className="text-white/35 font-body text-xs">{emp.dept}</p>
+                      <p className="font-body text-xs" style={{ color: "#3D6BC0", opacity: 0.55 }}>{emp.dept}</p>
                     </div>
                     {form.whomToMeet === emp.id.toString() && (
-                      <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f0c060" strokeWidth="2.5">
+                      <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6829" strokeWidth="2.5">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     )}
@@ -221,6 +213,7 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
                 ))}
               </div>
             </FormField>
+
           </div>
         </div>
       )}
@@ -229,9 +222,9 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
       {step === 2 && (
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8 gap-6">
           <div className="text-center">
-            <p className="text-gold-400 font-body text-sm tracking-widest uppercase mb-2">Step 2 of 2</p>
-            <h2 className="text-white font-display text-3xl font-semibold">Capture Your Photo</h2>
-            <p className="text-white/45 font-body text-sm mt-1">Your photo will be stored for security & identification purposes</p>
+            <p className="font-body text-sm tracking-widest uppercase mb-2" style={{ color: "#FF6829" }}>Step 2 of 2</p>
+            <h2 className="font-display text-3xl font-semibold" style={{ color: "#FF6829" }}>Capture Your Photo</h2>
+            <p className="font-body text-sm mt-1" style={{ color: "#3D6BC0", opacity: 0.7 }}>Your photo will be stored for security & identification purposes</p>
           </div>
 
           {form.photo ? (
@@ -241,7 +234,7 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
                   src={form.photo}
                   alt="Captured"
                   className="w-48 h-48 rounded-2xl object-cover"
-                  style={{ border: "2px solid rgba(240,192,96,0.5)", boxShadow: "0 0 30px rgba(240,192,96,0.2)" }}
+                  style={{ border: "2px solid rgba(255,104,41,0.5)", boxShadow: "0 0 30px rgba(255,104,41,0.2)" }}
                 />
                 <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "#22c55e" }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
@@ -251,7 +244,8 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
               </div>
               <button
                 onClick={() => update("photo", null)}
-                className="text-white/50 font-body text-sm underline hover:text-white/75"
+                className="font-body text-sm underline"
+                style={{ color: "#3D6BC0" }}
               >
                 Retake photo
               </button>
@@ -261,15 +255,15 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
               onClick={() => setShowCamera(true)}
               className="flex flex-col items-center justify-center gap-4 w-56 h-56 rounded-2xl transition-all active:scale-95"
               style={{
-                background: "rgba(240,192,96,0.06)",
-                border: "2px dashed rgba(240,192,96,0.35)",
+                background: "rgba(255,104,41,0.06)",
+                border: "2px dashed rgba(255,104,41,0.45)",
               }}
             >
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f0c060" strokeWidth="1.5">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF6829" strokeWidth="1.5">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                 <circle cx="12" cy="13" r="4"/>
               </svg>
-              <span className="text-gold-400 font-body text-sm">Tap to Open Camera</span>
+              <span className="font-body text-sm" style={{ color: "#FF6829" }}>Tap to Open Camera</span>
             </button>
           )}
           {errors.photo && <p className="text-red-400 font-body text-sm">{errors.photo}</p>}
@@ -281,8 +275,8 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
         {step === 2 && (
           <button
             onClick={() => setStep(1)}
-            className="px-8 py-3.5 rounded-xl font-body text-sm font-medium text-white/70 hover:text-white transition-all active:scale-95"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+            className="px-8 py-3.5 rounded-xl font-body text-sm font-medium transition-all active:scale-95"
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#3D6BC0" }}
           >
             ← Previous
           </button>
@@ -301,9 +295,9 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
             }}
             className="px-10 py-3.5 rounded-xl font-body text-sm font-semibold transition-all active:scale-95"
             style={{
-              background: "linear-gradient(135deg, #e0a830, #f0c060)",
-              color: "#0a0f1e",
-              boxShadow: "0 4px 20px rgba(240,192,96,0.3)",
+              background: "linear-gradient(135deg, #e05520, #FF6829)",
+              color: "#ffffff",
+              boxShadow: "0 4px 20px rgba(255,104,41,0.3)",
             }}
           >
             Continue →
@@ -313,9 +307,9 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
             onClick={handleSubmit}
             className="px-10 py-3.5 rounded-xl font-body text-sm font-semibold transition-all active:scale-95"
             style={{
-              background: "linear-gradient(135deg, #e0a830, #f0c060)",
-              color: "#0a0f1e",
-              boxShadow: "0 4px 20px rgba(240,192,96,0.3)",
+              background: "linear-gradient(135deg, #e05520, #FF6829)",
+              color: "#ffffff",
+              boxShadow: "0 4px 20px rgba(255,104,41,0.3)",
             }}
           >
             Submit & Notify Host ✉️
@@ -349,8 +343,8 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
 function FormField({ label, required, error, children }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="font-body text-sm font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>
-        {label} {required && <span className="text-gold-400">*</span>}
+      <label className="font-body text-sm font-medium" style={{ color: "#3D6BC0" }}>
+        {label} {required && <span style={{ color: "#FF6829" }}>*</span>}
       </label>
       {children}
       {error && <p className="text-red-400 font-body text-xs mt-0.5">{error}</p>}
@@ -363,8 +357,8 @@ function StepDot({ active, label, done }) {
     <div
       className="w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-semibold transition-all"
       style={{
-        background: active ? "linear-gradient(135deg, #e0a830, #f0c060)" : "rgba(255,255,255,0.06)",
-        color: active ? "#0a0f1e" : "rgba(255,255,255,0.3)",
+        background: active ? "linear-gradient(135deg, #e05520, #FF6829)" : "rgba(255,255,255,0.06)",
+        color: active ? "#ffffff" : "rgba(255,255,255,0.3)",
         border: active ? "none" : "1px solid rgba(255,255,255,0.1)",
       }}
     >
@@ -373,10 +367,18 @@ function StepDot({ active, label, done }) {
   );
 }
 
-function inputClass(error) {
-  return `w-full px-4 py-3 rounded-xl font-body text-sm text-white placeholder-white/30 outline-none transition-all focus:ring-1 ${
-    error
-      ? "ring-1 ring-red-500/50 bg-red-900/10 border border-red-500/30"
-      : "bg-white/5 border border-white/10 focus:border-gold-400/40 focus:ring-gold-400/20"
-  }`;
+function inputStyle(error) {
+  return {
+    width: "100%",
+    padding: "12px 16px",
+    borderRadius: "12px",
+    fontSize: "14px",
+    fontFamily: "inherit",
+    color: "#1e293b",
+    background: "#ffffff",
+    border: error ? "1.5px solid rgba(239,68,68,0.6)" : "1.5px solid rgba(61,107,192,0.45)",
+    outline: "none",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+    transition: "border-color 0.2s, box-shadow 0.2s",
+  };
 }

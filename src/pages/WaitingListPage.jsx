@@ -18,19 +18,16 @@ export default function WaitingListPage({ visitors, onExit, onBack }) {
   };
 
   return (
-    <div
-      className="relative w-full h-full flex flex-col overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #0a0f1e 0%, #0d1530 60%, #111d42 100%)" }}
-    >
+    <div className="relative w-full h-full flex flex-col overflow-hidden">
       {/* BG blobs */}
       <div className="blob w-72 h-72 bg-purple-800" style={{ top: "-10%", right: "-5%", animationDelay: "0s" }} />
-      <div className="blob w-56 h-56 bg-gold-500" style={{ bottom: "0%", left: "-5%", animationDelay: "2.5s" }} />
+      <div className="blob w-56 h-56" style={{ bottom: "0%", left: "-5%", animationDelay: "2.5s", background: "#FF6829" }} />
 
       {/* Grid */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: "linear-gradient(rgba(240,192,96,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(240,192,96,0.5) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(255,104,41,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,104,41,0.5) 1px, transparent 1px)",
           backgroundSize: "50px 50px",
         }}
       />
@@ -49,8 +46,8 @@ export default function WaitingListPage({ visitors, onExit, onBack }) {
         </button>
 
         <div className="text-center">
-          <h1 className="gold-shimmer font-display text-3xl font-bold">Waiting Visitors</h1>
-          <p className="text-white/40 font-body text-xs mt-0.5">
+          <h1 className="font-display text-3xl font-bold" style={{ color: "#FF6829" }}>Waiting Visitors</h1>
+          <p className="font-body text-xs mt-0.5" style={{ color: "#3D6BC0", opacity: 0.7 }}>
             {visitors.length === 0
               ? "No visitors currently waiting"
               : `${visitors.length} visitor${visitors.length > 1 ? "s" : ""} waiting`}
@@ -60,10 +57,10 @@ export default function WaitingListPage({ visitors, onExit, onBack }) {
         {/* Badge */}
         <div
           className="px-5 py-3 rounded-xl text-center"
-          style={{ background: "rgba(240,192,96,0.1)", border: "1px solid rgba(240,192,96,0.25)" }}
+          style={{ background: "rgba(255,104,41,0.1)", border: "1px solid rgba(255,104,41,0.25)" }}
         >
-          <p className="gold-shimmer font-display text-3xl font-bold leading-none">{visitors.length}</p>
-          <p className="text-white/40 font-body text-xs mt-0.5">Waiting</p>
+          <p className="font-display text-3xl font-bold leading-none" style={{ color: "#FF6829" }}>{visitors.length}</p>
+          <p className="font-body text-xs mt-0.5" style={{ color: "#3D6BC0", opacity: 0.6 }}>Waiting</p>
         </div>
       </div>
 
@@ -77,8 +74,8 @@ export default function WaitingListPage({ visitors, onExit, onBack }) {
             >
               🪑
             </div>
-            <p className="text-white/35 font-body text-lg">No visitors waiting right now</p>
-            <p className="text-white/20 font-body text-sm">Visitors who check in will appear here</p>
+            <p className="font-body text-lg" style={{ color: "#3D6BC0", opacity: 0.5 }}>No visitors waiting right now</p>
+            <p className="font-body text-sm" style={{ color: "#3D6BC0", opacity: 0.3 }}>Visitors who check in will appear here</p>
           </div>
         ) : (
           <div className="max-w-3xl mx-auto flex flex-col gap-3">
@@ -119,15 +116,15 @@ function VisitorCard({ visitor, index, isExiting, isConfirming, onExitClick, onC
             src={visitor.photo}
             alt={visitor.visitorName}
             className="w-16 h-16 rounded-xl object-cover"
-            style={{ border: "2px solid rgba(240,192,96,0.3)" }}
+            style={{ border: "2px solid rgba(255,104,41,0.35)" }}
           />
         ) : (
           <div
             className="w-16 h-16 rounded-xl flex items-center justify-center text-2xl font-display font-bold"
             style={{
-              background: "linear-gradient(135deg, rgba(240,192,96,0.2), rgba(240,192,96,0.05))",
-              border: "2px solid rgba(240,192,96,0.25)",
-              color: "#f0c060",
+              background: "linear-gradient(135deg, rgba(255,104,41,0.2), rgba(255,104,41,0.05))",
+              border: "2px solid rgba(255,104,41,0.25)",
+              color: "#FF6829",
             }}
           >
             {visitor.visitorName?.[0]?.toUpperCase()}
@@ -144,11 +141,11 @@ function VisitorCard({ visitor, index, isExiting, isConfirming, onExitClick, onC
       {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="text-white font-body font-semibold text-lg truncate">{visitor.visitorName}</h3>
+          <h3 className="font-body font-semibold text-lg truncate" style={{ color: "#3D6BC0" }}>{visitor.visitorName}</h3>
           {visitor.company && (
             <span
               className="px-2 py-0.5 rounded-full font-body text-xs flex-shrink-0"
-              style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.5)" }}
+              style={{ background: "rgba(61,107,192,0.1)", color: "rgba(61,107,192,0.7)" }}
             >
               {visitor.company}
             </span>
@@ -166,12 +163,12 @@ function VisitorCard({ visitor, index, isExiting, isConfirming, onExitClick, onC
       <div className="flex-shrink-0">
         {isConfirming ? (
           <div className="flex flex-col items-end gap-2">
-            <p className="text-white/60 font-body text-xs text-right">Confirm exit?</p>
+            <p className="font-body text-xs text-right" style={{ color: "#3D6BC0", opacity: 0.7 }}>Confirm exit?</p>
             <div className="flex gap-2">
               <button
                 onClick={onCancelExit}
-                className="px-3 py-2 rounded-lg font-body text-xs font-medium text-white/60 hover:text-white transition-all active:scale-95"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                className="px-3 py-2 rounded-lg font-body text-xs font-medium transition-all active:scale-95"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#3D6BC0" }}
               >
                 Cancel
               </button>
@@ -211,7 +208,7 @@ function InfoChip({ icon, text, highlight }) {
   return (
     <span
       className="flex items-center gap-1 font-body text-xs"
-      style={{ color: highlight ? "#f0c060" : "rgba(255,255,255,0.45)" }}
+      style={{ color: highlight ? "#FF6829" : "rgba(61,107,192,0.6)" }}
     >
       <span>{icon}</span>
       <span>{text}</span>

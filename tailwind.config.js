@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+/** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
@@ -8,18 +9,22 @@ export default {
         body: ["'DM Sans'", "sans-serif"],
       },
       colors: {
-        navy: {
-          900: "#0a0f1e",
-          800: "#0d1530",
-          700: "#111d42",
-          600: "#1a2a5e",
-        },
-        gold: {
-          400: "#f0c060",
-          500: "#e0a830",
-          300: "#f8d990",
-        },
-      },
+  brand: {
+    DEFAULT: "#DFF5E1",   // main background (light green)
+    mint: "#CFF2E8",
+    blue: "#E6F7FF",
+  },
+  surface: "#FFFFFF",    // cards / containers
+  text: {
+    primary: "#1F2937",  // dark text
+    muted: "#6B7280",
+  },
+  gold: {
+    400: "#f0c060",
+    500: "#e0a830",
+    300: "#f8d990",
+  },
+},
       animation: {
         "fade-in": "fadeIn 0.6s ease forwards",
         "slide-up": "slideUp 0.5s ease forwards",
@@ -35,4 +40,4 @@ export default {
     },
   },
   plugins: [],
-}
+};
