@@ -69,15 +69,15 @@ export default function CameraCapture({ onCapture, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.85)" }}>
       <div
         className="relative flex flex-col items-center gap-5 p-6 rounded-3xl w-full max-w-sm"
-        style={{ background: "#0d1530", border: "1px solid rgba(255,104,41,0.25)" }}
+        style={{ background: "#ffffff", border: "1px solid rgba(255,104,41,0.25)" }}
       >
         {/* Header */}
         <div className="w-full flex items-center justify-between">
           <h3 className="font-display text-xl font-semibold" style={{ color: "#FF6829" }}>Take Your Photo</h3>
           <button
             onClick={() => { stopCamera(); onClose(); }}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-all"
-            style={{ background: "rgba(255,255,255,0.06)" }}
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+            style={{ background: "rgba(61,107,192,0.08)", color: "#3D6BC0" }}
           >
             ✕
           </button>
@@ -123,7 +123,7 @@ export default function CameraCapture({ onCapture, onClose }) {
         <canvas ref={canvasRef} className="hidden" />
 
         {/* Tips */}
-        <p className="font-body text-xs text-center" style={{ color: "#3D6BC0", opacity: 0.6 }}>
+        <p className="font-body text-xs text-center" style={{ color: "#3D6BC0", opacity: 0.7 }}>
           Position your face within the frame and ensure good lighting
         </p>
 
@@ -132,7 +132,7 @@ export default function CameraCapture({ onCapture, onClose }) {
           <button
             onClick={() => { stopCamera(); onClose(); }}
             className="flex-1 py-3 rounded-xl font-body text-sm font-medium transition-all active:scale-95"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#3D6BC0" }}
+            style={{ background: "#f0f4ff", border: "1px solid rgba(61,107,192,0.25)", color: "#3D6BC0" }}
           >
             Cancel
           </button>

@@ -34,7 +34,7 @@ export default function SuccessPopup({ visitorName, whomToMeet, onClose }) {
       <div
         className="relative flex flex-col items-center text-center gap-5 p-8 rounded-3xl max-w-md w-full mx-6 transition-all duration-350"
         style={{
-          background: "linear-gradient(160deg, #0d1530, #111d42)",
+          background: "#ffffff",
           border: "1px solid rgba(255,104,41,0.3)",
           boxShadow: "0 0 60px rgba(255,104,41,0.15), 0 30px 60px rgba(0,0,0,0.5)",
           opacity: visible ? 1 : 0,
@@ -45,7 +45,7 @@ export default function SuccessPopup({ visitorName, whomToMeet, onClose }) {
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white/80 transition-all"
-          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+          style={{ background: "rgba(61,107,192,0.08)", border: "1px solid rgba(61,107,192,0.15)", color: "#3D6BC0" }}
         >
           ✕
         </button>
@@ -81,7 +81,7 @@ export default function SuccessPopup({ visitorName, whomToMeet, onClose }) {
         {/* Important note */}
         <div
           className="w-full px-4 py-3 rounded-xl flex items-start gap-3"
-          style={{ background: "rgba(255,104,41,0.08)", border: "1px solid rgba(255,104,41,0.2)" }}
+          style={{ background: "rgba(255,104,41,0.06)", border: "1px solid rgba(255,104,41,0.2)" }}
         >
           <span className="text-lg mt-0.5">⚠️</span>
           <p className="font-body text-sm leading-relaxed text-left" style={{ color: "#3D6BC0", opacity: 0.85 }}>
@@ -94,7 +94,7 @@ export default function SuccessPopup({ visitorName, whomToMeet, onClose }) {
         <div className="flex flex-col items-center gap-1">
           <div className="relative w-12 h-12">
             <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
-              <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
+              <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(61,107,192,0.15)" strokeWidth="3" />
               <circle
                 cx="24" cy="24" r="20"
                 fill="none"
