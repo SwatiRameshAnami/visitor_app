@@ -51,12 +51,12 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
         />
 
         {/* ─── TOP BAR ─── */}
-        <div className="relative z-20 flex items-start justify-between px-6 pt-5">
+        <div className="relative z-20 w-full flex items-center justify-between px-6 pt-5 gap-4">
           {/* LEFT: Waiting List Button */}
           <button
             onClick={onWaitingList}
-            className="corner-btn glass text-white hover:border-white/20 active:scale-95 relative"
-            style={{ border: "1px solid rgba(255,255,255,0.1)" }}
+            className="glass hover:border-white/20 active:scale-95 flex items-center gap-2 px-5 py-3 rounded-xl font-body font-medium text-sm transition-all duration-200 flex-shrink-0"
+            style={{ border: "1px solid rgba(255,168,77,0.3)", position: "relative", color: "#FFB366" }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -73,7 +73,7 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
           </button>
 
           {/* CENTER: Time */}
-          <div className="text-center">
+          <div className="flex-1 text-center">
             <p className="font-display text-4xl font-bold" style={{ color: "#FF6829" }}>{formattedTime}</p>
             <p className="text-white/40 font-body text-xs mt-0.5">{formattedDate}</p>
           </div>
@@ -81,12 +81,13 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
           {/* RIGHT: Check In Button */}
           <button
             onClick={onCheckIn}
-            className="corner-btn active:scale-95"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl font-body font-medium text-sm transition-all duration-200 active:scale-95 flex-shrink-0"
             style={{
               background: "linear-gradient(135deg, #e05520, #FF6829)",
               color: "#0a0f1e",
               fontWeight: "600",
               boxShadow: "0 4px 20px rgba(255,104,41,0.35)",
+              position: "relative",
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
