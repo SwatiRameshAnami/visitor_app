@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import CameraCapture from "../components/CameraCapture";
 import SuccessPopup from "../components/SuccessPopup";
+import BackButton from "../components/BackButton";
 
 const EMPLOYEES = [
   { id: 1, name: "Rajesh Kumar", dept: "Engineering", avatar: "👨‍💻" },
@@ -76,6 +77,8 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden">
+      <BackButton onClick={onBack} />
+      
       {/* BG blobs */}
       <div className="blob w-72 h-72 bg-indigo-800" style={{ top: "-10%", right: "-5%", animationDelay: "0s" }} />
       <div className="blob w-56 h-56" style={{ bottom: "-5%", left: "0%", animationDelay: "2s", background: "#FF6829" }} />
@@ -91,16 +94,7 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
 
       {/* Header */}
       <div className="relative z-20 flex items-center justify-between px-6 pt-5 pb-4">
-        <button
-          onClick={onBack}
-          className="corner-btn glass text-white/70 hover:text-white"
-          style={{ position: "relative", border: "1px solid rgba(255,255,255,0.1)" }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          Back
-        </button>
+        <div className="w-10" />
 
         <div className="text-center">
           <h1 className="font-display text-3xl font-bold" style={{ color: "#FF6829" }}>Visitor Check-In</h1>
