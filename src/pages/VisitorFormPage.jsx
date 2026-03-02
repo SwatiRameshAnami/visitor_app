@@ -4,12 +4,11 @@ import SuccessPopup from "../components/SuccessPopup";
 import BackButton from "../components/BackButton";
 
 const EMPLOYEES = [
-  { id: 1, name: "Rajesh Kumar", dept: "Engineering", avatar: "👨‍💻" },
-  { id: 2, name: "Priya Sharma", dept: "HR & Admin", avatar: "👩‍💼" },
-  { id: 3, name: "Anil Verma", dept: "Sales", avatar: "👨‍💼" },
-  { id: 4, name: "Sunita Patel", dept: "Finance", avatar: "👩‍💻" },
-  { id: 5, name: "Vikram Singh", dept: "Operations", avatar: "👨‍🔧" },
-  { id: 6, name: "Meera Nair", dept: "Marketing", avatar: "👩‍🎨" },
+  { id: 1, name: "Karthik C S", dept: "Founder", avatar: "👨‍💼" },
+  { id: 2, name: "Teelak N", dept: " VP ", avatar: "👨‍💼" },
+  { id: 3, name: "Veenutha H J", dept: "HR Operations", avatar: "👩‍💼" },
+  { id: 4, name: "Shneha G S ", dept: "Recruiter", avatar: "👩‍💼" },
+  { id: 5, name: "Ranjani N", dept: "Recruiter", avatar: "👩‍💼" },
 ];
 
 const PURPOSES = [
