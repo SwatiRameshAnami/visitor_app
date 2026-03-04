@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import IdleTimer from "../components/IdleTimer";
+import logo from "../assets/Wizzybox-Logomark.png";
 
 const companyPhotos = [
   { bg: "from-blue-900/60 to-indigo-900/60", icon: "🏛️", label: "Our Office" },
@@ -36,58 +37,69 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
     <IdleTimer onIdle={onIdle} timeout={60000}>
       <div
         className="relative w-full h-full flex flex-col overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #0a0f1e 0%, #0d1530 60%, #111d42 100%)" }}
       >
         {/* Background blobs */}
         <div className="blob w-80 h-80 bg-blue-800" style={{ top: "-5%", right: "10%", animationDelay: "0s" }} />
-        <div className="blob w-60 h-60 bg-gold-500" style={{ bottom: "10%", left: "-5%", animationDelay: "2s" }} />
+        <div className="blob w-60 h-60" style={{ bottom: "10%", left: "-5%", animationDelay: "2s", background: "#FF6829" }} />
 
         {/* Grid overlay */}
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: "linear-gradient(rgba(240,192,96,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(240,192,96,0.5) 1px, transparent 1px)",
+            backgroundImage: "linear-gradient(rgba(255,104,41,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,104,41,0.5) 1px, transparent 1px)",
             backgroundSize: "50px 50px",
           }}
         />
 
         {/* ─── TOP BAR ─── */}
-        <div className="relative z-20 flex items-start justify-between px-6 pt-5">
+        <div className="relative z-20 w-full flex items-center justify-between px-6 pt-5 gap-4">
           {/* LEFT: Waiting List Button */}
-          <button
-            onClick={onWaitingList}
-            className="corner-btn glass text-white hover:border-white/20 active:scale-95 relative"
-            style={{ border: "1px solid rgba(255,255,255,0.1)" }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            <span>Waiting List</span>
-            {waitingCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-gold-400 text-navy-900 text-xs font-bold flex items-center justify-center">
-                {waitingCount}
-              </span>
-            )}
-          </button>
+         <button
+  onClick={onWaitingList}
+  className="flex items-center gap-2 px-5 py-3 rounded-xl font-body font-medium text-sm transition-all duration-200 active:scale-95 flex-shrink-0"
+  style={{
+    background: "linear-gradient(135deg, #e05520, #FF6829)",
+    color: "#0a0f1e",
+    fontWeight: "600",
+    boxShadow: "0 4px 20px rgba(255,104,41,0.35)",
+    position: "relative",
+  }}
+>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+
+  <span>Waiting List</span>
+
+  {waitingCount > 0 && (
+    <span
+      className="absolute -top-2 -right-2 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center"
+      style={{ background: "#0a0f1e", color: "#FF6829" }}
+    >
+      {waitingCount}
+    </span>
+  )}
+</button>
 
           {/* CENTER: Time */}
-          <div className="text-center">
-            <p className="gold-shimmer font-display text-4xl font-bold">{formattedTime}</p>
+          <div className="flex-1 text-center">
+            <p className="font-display text-4xl font-bold" style={{ color: "#3D6BC0" }}>{formattedTime}</p>
             <p className="text-white/40 font-body text-xs mt-0.5">{formattedDate}</p>
           </div>
 
           {/* RIGHT: Check In Button */}
           <button
             onClick={onCheckIn}
-            className="corner-btn active:scale-95"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl font-body font-medium text-sm transition-all duration-200 active:scale-95 flex-shrink-0"
             style={{
-              background: "linear-gradient(135deg, #e0a830, #f0c060)",
+              background: "linear-gradient(135deg, #e05520, #FF6829)",
               color: "#0a0f1e",
               fontWeight: "600",
-              boxShadow: "0 4px 20px rgba(240,192,96,0.35)",
+              boxShadow: "0 4px 20px rgba(255,104,41,0.35)",
+              position: "relative",
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -105,14 +117,22 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
           {/* Company name + tagline */}
           <div className="text-center mb-2">
             <div className="flex items-center justify-center gap-3 mb-3">
-              <div className="h-px flex-1 max-w-16" style={{ background: "linear-gradient(to right, transparent, rgba(240,192,96,0.5))" }} />
-              <span className="text-gold-400 font-body text-sm tracking-[0.3em] uppercase font-medium">Welcome To</span>
-              <div className="h-px flex-1 max-w-16" style={{ background: "linear-gradient(to left, transparent, rgba(240,192,96,0.5))" }} />
+              <div className="h-px flex-1 max-w-16" style={{ background: "linear-gradient(to right, transparent, rgba(255,104,41,0.5))" }} />
+              <span className="font-body text-sm tracking-[0.3em] uppercase font-medium" style={{ color: "#FF6829" }}>Welcome To</span>
+              <div className="h-px flex-1 max-w-16" style={{ background: "linear-gradient(to left, transparent, rgba(255,104,41,0.5))" }} />
             </div>
-            <h1 className="gold-shimmer font-display text-7xl font-bold leading-none mb-3">
-              TechCorp
-            </h1>
-            <p className="text-white/60 font-body text-xl font-light italic">Solutions Pvt. Ltd.</p>
+          <div className="flex items-center justify-center gap-3 mb-3">
+  <img
+  src={logo}
+  alt="WizzyBox Logo"
+  className="h-20 w-20 object-contain mt-4"
+/>
+  <h1 className="font-display text-7xl font-bold leading-none">
+    <span style={{ color: "#3D6BC0" }}>WIZZY</span>
+    <span style={{ color: "#FF6829" }}>BOX</span>
+  </h1>
+</div>
+            <p className="font-body text-xl font-light italic" style={{ color: "#3D6BC0", opacity: 0.75 }}>Pvt. Ltd.</p>
           </div>
 
           {/* Photo gallery + Vision/Mission row */}
@@ -141,7 +161,7 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
                     className="h-1 rounded-full transition-all duration-500"
                     style={{
                       width: i === activePhoto ? "20px" : "6px",
-                      background: i === activePhoto ? "#f0c060" : "rgba(255,255,255,0.3)",
+                      background: i === activePhoto ? "#FF6829" : "rgba(255,255,255,0.3)",
                     }}
                   />
                 ))}
@@ -150,21 +170,21 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
 
             {/* Vision & Mission */}
             <div className="flex flex-col gap-3">
-              <div className="glass rounded-2xl p-5 flex-1" style={{ border: "1px solid rgba(240,192,96,0.15)" }}>
+              <div className="glass rounded-2xl p-5 flex-1" style={{ border: "1px solid rgba(255,104,41,0.15)" }}>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-gold-400 text-lg">🎯</span>
-                  <span className="text-gold-400 font-body text-xs tracking-widest uppercase font-semibold">Vision</span>
+                  <span className="text-lg" style={{ color: "#FF6829" }}>🎯</span>
+                  <span className="font-body text-xs tracking-widest uppercase font-semibold" style={{ color: "#FF6829" }}>Vision</span>
                 </div>
-                <p className="text-white/70 font-body text-sm leading-relaxed">
+                <p className="font-body text-sm leading-relaxed" style={{ color: "#3D6BC0", opacity: 0.85 }}>
                   To be the world's most trusted technology partner, empowering organizations to thrive.
                 </p>
               </div>
-              <div className="glass rounded-2xl p-5 flex-1" style={{ border: "1px solid rgba(240,192,96,0.15)" }}>
+              <div className="glass rounded-2xl p-5 flex-1" style={{ border: "1px solid rgba(255,104,41,0.15)" }}>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-gold-400 text-lg">🌟</span>
-                  <span className="text-gold-400 font-body text-xs tracking-widest uppercase font-semibold">Mission</span>
+                  <span className="text-lg" style={{ color: "#FF6829" }}>🌟</span>
+                  <span className="font-body text-xs tracking-widest uppercase font-semibold" style={{ color: "#FF6829" }}>Mission</span>
                 </div>
-                <p className="text-white/70 font-body text-sm leading-relaxed">
+                <p className="font-body text-sm leading-relaxed" style={{ color: "#3D6BC0", opacity: 0.85 }}>
                   Delivering innovative, reliable solutions with integrity, agility, and a human touch.
                 </p>
               </div>
@@ -179,8 +199,8 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
                 className="glass rounded-2xl py-4 px-3 text-center"
                 style={{ border: "1px solid rgba(255,255,255,0.06)" }}
               >
-                <p className="gold-shimmer font-display text-3xl font-bold">{stat.value}</p>
-                <p className="text-white/45 font-body text-xs mt-1 tracking-wide">{stat.label}</p>
+                <p className="font-display text-3xl font-bold" style={{ color: "#FF6829" }}>{stat.value}</p>
+                <p className="font-body text-xs mt-1 tracking-wide" style={{ color: "#3D6BC0", opacity: 0.6 }}>{stat.label}</p>
               </div>
             ))}
           </div>
@@ -189,7 +209,7 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
         {/* Bottom hint */}
         <div className="relative z-10 pb-5 text-center">
           <p className="text-white/25 font-body text-xs tracking-widest uppercase">
-            Tap <span className="text-gold-400/50">Check In</span> to register your visit
+            Tap <span style={{ color: "rgba(255,104,41,0.5)" }}>Check In</span> to register your visit
           </p>
         </div>
       </div>

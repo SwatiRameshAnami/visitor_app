@@ -54,7 +54,6 @@ export default function CameraCapture({ onCapture, onClose }) {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
-    // Mirror the photo (selfie style)
     ctx.scale(-1, 1);
     ctx.drawImage(video, -canvas.width, 0);
     setFlash(true);
@@ -70,26 +69,26 @@ export default function CameraCapture({ onCapture, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.85)" }}>
       <div
         className="relative flex flex-col items-center gap-5 p-6 rounded-3xl w-full max-w-sm"
-        style={{ background: "#0d1530", border: "1px solid rgba(240,192,96,0.25)" }}
+        style={{ background: "#ffffff", border: "1px solid rgba(255,104,41,0.25)" }}
       >
         {/* Header */}
         <div className="w-full flex items-center justify-between">
-          <h3 className="text-white font-display text-xl font-semibold">Take Your Photo</h3>
+          <h3 className="font-display text-xl font-semibold" style={{ color: "#FF6829" }}>Take Your Photo</h3>
           <button
             onClick={() => { stopCamera(); onClose(); }}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-all"
-            style={{ background: "rgba(255,255,255,0.06)" }}
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+            style={{ background: "rgba(61,107,192,0.08)", color: "#3D6BC0" }}
           >
             ✕
           </button>
         </div>
 
         {/* Camera preview */}
-        <div className="relative w-64 h-64 rounded-2xl overflow-hidden" style={{ border: "2px solid rgba(240,192,96,0.3)" }}>
+        <div className="relative w-64 h-64 rounded-2xl overflow-hidden" style={{ border: "2px solid rgba(255,104,41,0.35)" }}>
           {error ? (
             <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-white/5 px-4 text-center">
               <span className="text-4xl">📷</span>
-              <p className="text-white/60 font-body text-sm">{error}</p>
+              <p className="font-body text-sm" style={{ color: "#3D6BC0", opacity: 0.8 }}>{error}</p>
             </div>
           ) : (
             <>
@@ -104,7 +103,7 @@ export default function CameraCapture({ onCapture, onClose }) {
               {/* Countdown overlay */}
               {countdown !== null && (
                 <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.4)" }}>
-                  <span className="gold-shimmer font-display text-8xl font-bold">{countdown}</span>
+                  <span className="font-display text-8xl font-bold" style={{ color: "#FF6829" }}>{countdown}</span>
                 </div>
               )}
               {/* Flash */}
@@ -112,10 +111,10 @@ export default function CameraCapture({ onCapture, onClose }) {
               {/* Guide frame */}
               {!countdown && ready && (
                 <>
-                  <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-gold-400 rounded-tl-lg opacity-70" />
-                  <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-gold-400 rounded-tr-lg opacity-70" />
-                  <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-gold-400 rounded-bl-lg opacity-70" />
-                  <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-gold-400 rounded-br-lg opacity-70" />
+                  <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 rounded-tl-lg opacity-70" style={{ borderColor: "#FF6829" }} />
+                  <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 rounded-tr-lg opacity-70" style={{ borderColor: "#FF6829" }} />
+                  <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 rounded-bl-lg opacity-70" style={{ borderColor: "#FF6829" }} />
+                  <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 rounded-br-lg opacity-70" style={{ borderColor: "#FF6829" }} />
                 </>
               )}
             </>
@@ -124,7 +123,7 @@ export default function CameraCapture({ onCapture, onClose }) {
         <canvas ref={canvasRef} className="hidden" />
 
         {/* Tips */}
-        <p className="text-white/35 font-body text-xs text-center">
+        <p className="font-body text-xs text-center" style={{ color: "#3D6BC0", opacity: 0.7 }}>
           Position your face within the frame and ensure good lighting
         </p>
 
@@ -132,8 +131,8 @@ export default function CameraCapture({ onCapture, onClose }) {
         <div className="flex gap-3 w-full">
           <button
             onClick={() => { stopCamera(); onClose(); }}
-            className="flex-1 py-3 rounded-xl font-body text-sm font-medium text-white/60 transition-all active:scale-95"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+            className="flex-1 py-3 rounded-xl font-body text-sm font-medium transition-all active:scale-95"
+            style={{ background: "#f0f4ff", border: "1px solid rgba(61,107,192,0.25)", color: "#3D6BC0" }}
           >
             Cancel
           </button>
@@ -143,9 +142,9 @@ export default function CameraCapture({ onCapture, onClose }) {
               disabled={!ready || countdown !== null}
               className="flex-1 py-3 rounded-xl font-body text-sm font-semibold transition-all active:scale-95 disabled:opacity-50"
               style={{
-                background: "linear-gradient(135deg, #e0a830, #f0c060)",
-                color: "#0a0f1e",
-                boxShadow: "0 4px 16px rgba(240,192,96,0.3)",
+                background: "linear-gradient(135deg, #e05520, #FF6829)",
+                color: "#ffffff",
+                boxShadow: "0 4px 16px rgba(255,104,41,0.3)",
               }}
             >
               {countdown !== null ? `Taking in ${countdown}...` : ready ? "📸 Capture" : "Starting..."}

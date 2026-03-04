@@ -32,8 +32,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-navy-900">
-      {currentPage === "advertisement" && (
+<div className="w-screen h-screen overflow-hidden bg-white">
+                  {currentPage === "advertisement" && (
         <AdvertisementPage onTouch={() => navigate("home")} />
       )}
       {currentPage === "home" && (
