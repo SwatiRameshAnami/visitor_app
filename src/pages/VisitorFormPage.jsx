@@ -4,11 +4,10 @@ import SuccessPopup from "../components/SuccessPopup";
 import BackButton from "../components/BackButton";
 
 const EMPLOYEES = [
-  { id: 1, name: "Karthik C S", dept: "Founder", avatar: "👨‍💼" },
-  { id: 2, name: "Teelak N", dept: " VP ", avatar: "👨‍💼" },
-  { id: 3, name: "Veenutha H J", dept: "HR Operations", avatar: "👩‍💼" },
-  { id: 4, name: "Shneha G S ", dept: "Recruiter", avatar: "👩‍💼" },
-  { id: 5, name: "Ranjani N", dept: "Recruiter", avatar: "👩‍💼" },
+  { id: 1, name:"Rajendra", dept: "Development", email: "rajendra18raj@gmail.com", phone: "808852627", avatar: "👨‍💼", isHost: true },
+  { id: 2, name: "Kavyashree", dept: "Development", email: "srieekavya992@gmail.com", phone: "9100698162", avatar: "👩‍💼", isHost: true },
+  { id: 3, name: "Swati", dept: "Development", email: "swatianami487@gmail.com", phone: "9110278500", avatar: "👩‍💼", isHost: true },
+  { id: 4, name: "Thejas", dept: "Development", email: "thejasr2003@gmail.com", phone: "8618200459", avatar: "👨‍💼", isHost: true },
 ];
 
 const PURPOSES = [
