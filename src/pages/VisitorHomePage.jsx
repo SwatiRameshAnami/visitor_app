@@ -206,12 +206,7 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
           </div>
         </div>
 
-        {/* Bottom hint */}
-        <div className="relative z-10 pb-5 text-center">
-          <p className="text-white/25 font-body text-xs tracking-widest uppercase">
-            Tap <span style={{ color: "rgba(255,104,41,0.5)" }}>Check In</span> to register your visit
-          </p>
-        </div>
+       
       </div>
     </IdleTimer>
   );
