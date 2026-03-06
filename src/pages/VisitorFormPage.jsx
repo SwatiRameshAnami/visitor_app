@@ -176,7 +176,7 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
                 style={inputStyle(errors.email)}
               />
             </FormField>
-
+            
             <FormField label="Company / Organisation" error={errors.company}>
               <select
                   value={form.company}
