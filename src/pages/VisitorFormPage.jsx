@@ -10,15 +10,37 @@ const EMPLOYEES = [
   { id: 4, name: "Thejas", dept: "Development", email: "thejasr2003@gmail.com", phone: "8618200459", avatar: "👨‍💼", isHost: true },
 ];
 
-const PURPOSES = [
-  "Business Meeting",
-  "Interview",
-  "Vendor Discussion",
-  "Delivery",
-  "Support / Maintenance",
-  "Personal Visit",
+const PURPOSE_MAP = {
+  nammaqa: [
+  "Training Session",
+  "Course Inquiry",
+  "Enrollment",
+  "Guest Lecture",
+  "Certificate Collection",
+  "Expert Session",
+  "Trainer Meeting",
   "Other",
-];
+],
+  wizzybox: [
+    "Client Meeting",
+    "Project Discussion",
+    "HR Discussion",
+    "IT Support",
+    "Delivery",
+    "Product Demo",
+    "Interview",
+    "Other",
+  ],
+  default: [
+    "Business Meeting",
+    "Interview",
+    "Vendor Discussion",
+    "Delivery",
+    "Support / Maintenance",
+    "Personal Visit",
+    "Other",
+  ],
+};
 
 const initialForm = {
   visitorName: "",
@@ -37,11 +59,23 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
   const [step, setStep] = useState(1);
+  const [availablePurposes, setAvailablePurposes] = useState(PURPOSE_MAP.default);
+ const update = (key, value) => {
+  setForm((p) => ({ ...p, [key]: value }));
+  setErrors((p) => ({ ...p, [key]: "" }));
 
-  const update = (key, value) => {
-    setForm((p) => ({ ...p, [key]: value }));
-    setErrors((p) => ({ ...p, [key]: "" }));
-  };
+  if (key === "company") {
+    const companyKey = value.toLowerCase().trim();
+
+    if (companyKey.includes("wizzybox")) {
+      setAvailablePurposes(PURPOSE_MAP.wizzybox);
+    } else if (companyKey.includes("nammaqa")) {
+      setAvailablePurposes(PURPOSE_MAP.nammaqa);
+    } else {
+      setAvailablePurposes(PURPOSE_MAP.default);
+    }
+  }
+};
 
   const validate = () => {
     const e = {};
@@ -142,36 +176,38 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
                 style={inputStyle(errors.email)}
               />
             </FormField>
-
+            
             <FormField label="Company / Organisation" error={errors.company}>
-              <input
-                type="text"
-                placeholder="Your company name (optional)"
-                value={form.company}
-                onChange={(e) => update("company", e.target.value)}
-                style={inputStyle(errors.company)}
-              />
+              <select
+                  value={form.company}
+                  onChange={(e) => update("company", e.target.value)}
+                  style={inputStyle(errors.company)}
+                >
+                <option value="">Select Company</option>
+                <option value="nammaQA">NammaQA</option>
+                <option value="wizzybox">WizzyBox</option>
+              </select>
             </FormField>
 
-            <FormField label="Purpose of Visit" required error={errors.purpose}>
-              <div className="grid grid-cols-2 gap-2 mt-1">
-                {PURPOSES.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => update("purpose", p)}
-                    className="text-left px-3 py-2.5 rounded-xl font-body text-sm transition-all duration-200 active:scale-95"
-                    style={{
-                      background: form.purpose === p ? "rgba(255,104,41,0.15)" : "rgba(255,255,255,0.92)",
-                      border: form.purpose === p ? "1.5px solid rgba(255,104,41,0.7)" : "1.5px solid rgba(61,107,192,0.4)",
-                      color: form.purpose === p ? "#FF6829" : "#3D6BC0",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-                    }}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </FormField>
+           <FormField label="Purpose of Visit" required error={errors.purpose}>
+  <div className="grid grid-cols-2 gap-2 mt-1">
+    {availablePurposes.map((p) => (
+      <button
+        key={p}
+        onClick={() => update("purpose", p)}
+        className="text-left px-3 py-2.5 rounded-xl font-body text-sm transition-all duration-200 active:scale-95"
+        style={{
+          background: form.purpose === p ? "rgba(255,104,41,0.15)" : "rgba(255,255,255,0.92)",
+          border: form.purpose === p ? "1.5px solid rgba(255,104,41,0.7)" : "1.5px solid rgba(61,107,192,0.4)",
+          color: form.purpose === p ? "#FF6829" : "#3D6BC0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        }}
+      >
+        {p}
+      </button>
+    ))}
+  </div>
+  </FormField>
 
             <FormField label="Person to Meet" required error={errors.whomToMeet}>
               <div className="flex flex-col gap-2 mt-1">
