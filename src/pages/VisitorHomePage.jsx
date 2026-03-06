@@ -206,7 +206,7 @@ export default function VisitorHomePage({ onCheckIn, onWaitingList, waitingCount
           </div>
         </div>
 
-        
+       
       </div>
     </IdleTimer>
   );

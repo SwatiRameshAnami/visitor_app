@@ -12,15 +12,15 @@ const EMPLOYEES = [
 
 const PURPOSE_MAP = {
   nammaqa: [
-  "Training Session",
-  "Course Inquiry",
-  "Enrollment",
-  "Guest Lecture",
-  "Certificate Collection",
-  "Expert Session",
-  "Trainer Meeting",
-  "Other",
-],
+    "Training Session",
+    "Course Inquiry",
+    "Enrollment",
+    "Assessment",
+    "Certificate Collection",
+     "Workshop Participation",
+     "Trainer Meeting",
+    "Other",
+  ],
   wizzybox: [
     "Client Meeting",
     "Project Discussion",
@@ -28,7 +28,7 @@ const PURPOSE_MAP = {
     "IT Support",
     "Delivery",
     "Product Demo",
-    "Interview",
+    "Partnership Discussion",
     "Other",
   ],
   default: [
@@ -200,7 +200,7 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
           background: form.purpose === p ? "rgba(255,104,41,0.15)" : "rgba(255,255,255,0.92)",
           border: form.purpose === p ? "1.5px solid rgba(255,104,41,0.7)" : "1.5px solid rgba(61,107,192,0.4)",
           color: form.purpose === p ? "#FF6829" : "#3D6BC0",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+          boxShadow: "0 1px 3px rgba(61,107,192,0.4)",
         }}
       >
         {p}
