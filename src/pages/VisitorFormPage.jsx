@@ -3,6 +3,7 @@ import CameraCapture from "../components/CameraCapture";
 import SuccessPopup from "../components/SuccessPopup";
 import BackButton from "../components/BackButton";
 import { checkInVisitor } from "../services/apiServices";
+import axios from "axios";
 
 const EMPLOYEES = [
   { id: 1, name: "Rajendra", dept: "Development", email: "rajendra18raj@gmail.com", phone: "808852627", avatar: "👨‍💼", isHost: true },
@@ -67,6 +68,18 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
     return e;
   };
 
+  const uploadToCloudinary = async (base64Data) => {
+    const formData = new FormData();
+    formData.append("file", base64Data);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+    
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      formData
+    );
+    return response.data.secure_url;
+  };
+
   const handleSubmit = async () => {
     const e = validate();
     if (Object.keys(e).length > 0) {
@@ -76,6 +89,9 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
     }
     setIsSubmitting(true);
     try {
+      const cloudinaryUrl = await uploadToCloudinary(form.photo);
+      console.log(cloudinaryUrl)
+
       const employee = EMPLOYEES.find(emp => emp.id === parseInt(form.whomToMeet));
       const payload = {
         visitorName: form.visitorName,
@@ -86,18 +102,16 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
         whomToMeet: employee?.name,
         employeeDept: employee?.dept,
         employeeEmail: employee?.email,
+        imageURL: cloudinaryUrl
       };
-      console.log("Submitting Payload:", payload);
+
+      console.log("Submitting Payload with Cloudinary URL:", payload);
       await checkInVisitor(payload);
       setSubmittedData(payload);
       setShowSuccess(true);
     } catch (err) {
       console.error("Submission Error:", err);
-      if (err.response && err.response.status === 400) {
-        alert(`Validation Error: ${err.response.data.message || "Invalid Data"}`);
-      } else {
-        alert("Server Error: Please ensure backend is running and Port 8082 is Public.");
-      }
+      alert("Failed to process check-in. Please ensure the camera image is captured and backend is running.");
     } finally {
       setIsSubmitting(false);
     }
@@ -201,7 +215,7 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
         {step === 1 ? (
           <button onClick={() => { const e = {}; if (!form.visitorName.trim()) e.visitorName = "Name is required"; if (!form.phone.trim() || !/^\d{10}$/.test(form.phone.trim())) e.phone = "Valid 10-digit number required"; if (!form.purpose) e.purpose = "Select a purpose"; if (!form.whomToMeet) e.whomToMeet = "Select person to meet"; if (Object.keys(e).length > 0) { setErrors(e); return; } setStep(2); }} className="px-10 py-3.5 rounded-xl font-body text-sm font-semibold transition-all active:scale-95" style={{ background: "linear-gradient(135deg, #e05520, #FF6829)", color: "#ffffff", boxShadow: "0 4px 20px rgba(255,104,41,0.3)" }}>Continue →</button>
         ) : (
-          <button onClick={handleSubmit} disabled={isSubmitting} className="px-10 py-3.5 rounded-xl font-body text-sm font-semibold transition-all active:scale-95" style={{ background: isSubmitting ? "#9ca3af" : "linear-gradient(135deg, #e05520, #FF6829)", color: "#ffffff", boxShadow: isSubmitting ? "none" : "0 4px 20px rgba(255,104,41,0.3)", cursor: isSubmitting ? "not-allowed" : "pointer" }}>{isSubmitting ? "Checking In..." : "Submit & Notify Host ✉️"}</button>
+          <button onClick={handleSubmit} disabled={isSubmitting} className="px-10 py-3.5 rounded-xl font-body text-sm font-semibold transition-all active:scale-95" style={{ background: isSubmitting ? "#9ca3af" : "linear-gradient(135deg, #e05520, #FF6829)", color: "#ffffff", boxShadow: isSubmitting ? "none" : "0 4px 20px rgba(255,104,41,0.3)", cursor: isSubmitting ? "not-allowed" : "pointer" }}>{isSubmitting ? "Finalizing..." : "Submit & Notify Host ✉️"}</button>
         )}
       </div>
       {showCamera && <CameraCapture onCapture={(photo) => { update("photo", photo); setShowCamera(false); }} onClose={() => setShowCamera(false)} />}

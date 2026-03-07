@@ -160,8 +160,8 @@ function VisitorCard({ visitor, index, isExiting, isConfirming, onExitClick, onC
       }}
     >
       <div className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center" style={{ border: "2px solid rgba(255,104,41,0.25)", background: "rgba(255,255,255,0.05)" }}>
-        {visitor.photo ? (
-          <img src={visitor.photo} alt="visitor" className="w-full h-full object-cover" />
+        {visitor.imageURL ? (
+          <img src={visitor.imageURL} alt="visitor" className="w-full h-full object-cover" />
         ) : (
           <span className="text-2xl font-bold" style={{ color: "#FF6829" }}>
             {visitor.visitorName?.[0]?.toUpperCase()}
