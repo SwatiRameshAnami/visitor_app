@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://cuddly-trout-6996x94x699jhx54g-8082.app.github.dev/api";
+const BASE_URL = "https://visitor-app-backend.onrender.com/api";
 
 
 export const checkInVisitor = async (payload) => {
