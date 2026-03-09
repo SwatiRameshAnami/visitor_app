@@ -10,6 +10,7 @@ const EMPLOYEES = [
   { id: 2, name: "Kavyashree", dept: "Development", email: "srieekavya992@gmail.com", phone: "9100698162", avatar: "👩‍💼", isHost: true },
   { id: 3, name: "Swati", dept: "Development", email: "swatianami487@gmail.com", phone: "9110278500", avatar: "👩‍💼", isHost: true },
   { id: 4, name: "Thejas", dept: "Development", email: "thejasr2003@gmail.com", phone: "8618200459", avatar: "👨‍💼", isHost: true },
+  { id: 5, name: "raaghu", dept: "testing", email: "raaghu2002@gmail.com", phone: "8618200456", avatar: "👨‍💼", isHost: true },
 ];
 
 const PURPOSE_MAP = {
