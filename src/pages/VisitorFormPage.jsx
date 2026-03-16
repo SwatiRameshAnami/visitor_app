@@ -2,8 +2,9 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import CameraCapture from "../components/CameraCapture";
 import SuccessPopup from "../components/SuccessPopup";
 import BackButton from "../components/BackButton";
-import { checkInVisitor } from "../services/apiServices";
-import axios from "axios";
+import Keyboard from "react-simple-keyboard";
+import "react-simple-keyboard/build/css/index.css";
+
 
 const EMPLOYEES = [
   { id: 1, name: "Rajendra", dept: "Development", email: "rajendra18raj@gmail.com", phone: "808852627", avatar: "👨‍💼", isHost: true },
@@ -38,6 +39,48 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   const [step, setStep] = useState(1);
   const [availablePurposes, setAvailablePurposes] = useState(PURPOSE_MAP.default);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentInput, setCurrentInput] = useState("visitorName");
+  const [searchLetter, setSearchLetter] = useState("");
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchLetter]);
+
+  const keyboardRef = useRef(null);
+
+  useEffect(() => {
+    if (keyboardRef.current) {
+      if (currentInput === "searchLetter") {
+        keyboardRef.current.setInput(searchLetter);
+      } else {
+        keyboardRef.current.setInput(form[currentInput] || "");
+      }
+    }
+  }, [currentInput]);
+
+  useEffect(() => {
+    if (!keyboardRef.current) return;
+
+    if (currentInput === "searchLetter") {
+      keyboardRef.current.setInput(searchLetter);
+    } else {
+      keyboardRef.current.setInput(form[currentInput] || "");
+    }
+  }, [currentInput, form, searchLetter]);
+
+  const onKeyboardChange = (input) => {
+    if (!currentInput) return;
+
+    if (currentInput === "searchLetter") {
+      setSearchLetter(input);
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [currentInput]: input
+      }));
+    }
+  };
 
   const update = (key, value) => {
     let formattedValue = value;
@@ -59,6 +102,19 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
     setErrors((p) => ({ ...p, [key]: "" }));
   };
 
+  const handleSearch = () => {
+    if (!searchLetter) {
+      setFilteredEmployees([]);
+      return;
+    }
+
+    const results = EMPLOYEES.filter(emp =>
+      emp.name.toLowerCase().startsWith(searchLetter.toLowerCase())
+    );
+
+   setFilteredEmployees(results);
+  };
+
   const validate = () => {
     const e = {};
     if (!form.visitorName.trim()) e.visitorName = "Name is required";
@@ -69,54 +125,62 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
     return e;
   };
 
-  const uploadToCloudinary = async (base64Data) => {
-    const formData = new FormData();
+   const uploadToCloudinary = async (base64Data) => {
+     const formData = new FormData();
     formData.append("file", base64Data);
-    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+     formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
     
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+     const response = await axios.post(
+       `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
       formData
-    );
+     );
     return response.data.secure_url;
-  };
+   };
 
   const handleSubmit = async () => {
-    const e = validate();
-    if (Object.keys(e).length > 0) {
-      setErrors(e);
-      if (["visitorName", "phone", "purpose", "whomToMeet"].some(f => e[f])) setStep(1);
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      const cloudinaryUrl = await uploadToCloudinary(form.photo);
-      console.log(cloudinaryUrl)
+  const e = validate();
 
-      const employee = EMPLOYEES.find(emp => emp.id === parseInt(form.whomToMeet));
-      const payload = {
-        visitorName: form.visitorName,
-        phone: form.phone,
-        email: form.email,
-        company: form.company,
-        purpose: form.purpose,
-        whomToMeet: employee?.name,
-        employeeDept: employee?.dept,
-        employeeEmail: employee?.email,
-        imageURL: cloudinaryUrl
-      };
-
-      console.log("Submitting Payload with Cloudinary URL:", payload);
-      await checkInVisitor(payload);
-      setSubmittedData(payload);
-      setShowSuccess(true);
-    } catch (err) {
-      console.error("Submission Error:", err);
-      alert("Failed to process check-in. Please ensure the camera image is captured and backend is running.");
-    } finally {
-      setIsSubmitting(false);
+  if (Object.keys(e).length > 0) {
+    setErrors(e);
+    if (["visitorName", "phone", "purpose", "whomToMeet"].some(f => e[f])) {
+      setStep(1);
     }
-  };
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const employee = EMPLOYEES.find(
+      emp => emp.id === parseInt(form.whomToMeet)
+    );
+
+    const payload = {
+      visitorName: form.visitorName,
+      phone: form.phone,
+      email: form.email,
+      company: form.company,
+      purpose: form.purpose,
+      whomToMeet: employee?.name,
+      employeeDept: employee?.dept,
+      employeeEmail: employee?.email,
+      photo: form.photo,
+      time: new Date().toLocaleString(),
+      status: "Waiting"
+    };
+
+    console.log("Visitor Check-in:", payload);
+
+    setSubmittedData(payload);
+    setShowSuccess(true);
+
+  } catch (err) {
+    console.error("Submission Error:", err);
+    alert("Something went wrong while processing the check-in.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleSuccessClose = () => {
     setShowSuccess(false);
@@ -145,13 +209,45 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
         <div className="relative z-10 flex-1 overflow-y-auto custom-scroll px-8 pb-6">
           <div className="max-w-3xl mx-auto grid grid-cols-2 gap-4">
             <FormField label="Visitor Name" required error={errors.visitorName}>
-              <input type="text" placeholder="Enter your full name" value={form.visitorName} onChange={(e) => update("visitorName", e.target.value)} style={inputStyle(errors.visitorName)} />
-            </FormField>
-            <FormField label="Phone Number" required error={errors.phone}>
-              <input type="tel" placeholder="10-digit mobile number" value={form.phone} maxLength={10} onChange={(e) => update("phone", e.target.value.replace(/\D/, ""))} style={inputStyle(errors.phone)} />
-            </FormField>
+              <input
+               type="text"
+               placeholder="Enter your full name"
+               value={form.visitorName}
+               onFocus={() =>{ 
+                 setCurrentInput("visitorName")
+                 keyboardRef.current.setInput(form.visitorName);
+                }}
+               onChange={(e) => update("visitorName", e.target.value)}
+               style={inputStyle(errors.visitorName)}
+             />
+           </FormField>
+          <FormField label="Phone Number" required error={errors.phone}>
+            <input
+             type="tel"
+             placeholder="10-digit mobile number"
+             value={form.phone}
+             maxLength={10}
+             onFocus={() =>{
+              setCurrentInput("phone");
+              keyboardRef.current.setInput(form.phone);
+             } }
+             onChange={(e) => update("phone", e.target.value.replace(/\D/, ""))}
+             style={inputStyle(errors.phone)}
+            />
+          </FormField>
+
             <FormField label="Email Address" error={errors.email}>
-              <input type="email" placeholder="your@email.com (optional)" value={form.email} onChange={(e) => update("email", e.target.value)} style={inputStyle(errors.email)} />
+              <input
+               type="email"
+                placeholder="your@email.com (optional)"
+                value={form.email}
+                onFocus={() => {
+                  setCurrentInput("email");
+                  keyboardRef.current.setInput(form.email.com);
+                }}
+                onChange={(e) => update("email", e.target.value)}
+                style={inputStyle(errors.email)}
+             />
             </FormField>
             <FormField label="Company / Organisation" error={errors.company}>
               <select value={form.company} onChange={(e) => update("company", e.target.value)} style={inputStyle(errors.company)}>
@@ -168,19 +264,111 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
               </div>
             </FormField>
             <FormField label="Person to Meet" required error={errors.whomToMeet}>
-              <div className="flex flex-col gap-2 mt-1">
-                {EMPLOYEES.map((emp) => (
-                  <button key={emp.id} onClick={() => update("whomToMeet", emp.id.toString())} className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95" style={{ background: form.whomToMeet === emp.id.toString() ? "rgba(255,104,41,0.12)" : "rgba(255,255,255,0.92)", border: form.whomToMeet === emp.id.toString() ? "1.5px solid rgba(255,104,41,0.6)" : "1.5px solid rgba(61,107,192,0.4)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
-                    <span className="text-2xl">{emp.avatar}</span>
-                    <div className="text-left">
-                      <p className="font-body text-sm font-medium" style={{ color: form.whomToMeet === emp.id.toString() ? "#FF6829" : "#3D6BC0" }}>{emp.name}</p>
-                      <p className="font-body text-xs" style={{ color: "#3D6BC0", opacity: 0.55 }}>{emp.dept}</p>
-                    </div>
-                    {form.whomToMeet === emp.id.toString() && (<svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6829" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>)}
-                  </button>
-                ))}
-              </div>
-            </FormField>
+
+            <div className="flex flex-col gap-2 mt-1">
+
+    {/* Search Bar */}
+    <div className="flex gap-2 mb-2">
+      <input
+        type="text"
+        placeholder="Search employee name"
+        value={searchLetter}
+        onFocus={() => {
+          setCurrentInput("searchLetter");
+          keyboardRef.current.setInput(searchLetter);
+        }}
+        onChange={(e) => setSearchLetter(e.target.value)}
+        style={inputStyle()}
+      />
+
+      <button
+        onClick={handleSearch}
+        className="px-4 py-2 rounded-xl font-body text-sm font-medium"
+        style={{
+          background: "#FF6829",
+          color: "#ffffff"
+        }}
+      >
+        Search
+      </button>
+    </div>
+
+    {/* HR Card */}
+    <button
+      onClick={() => update("whomToMeet", "HR")}
+      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95"
+      style={{
+        background: form.whomToMeet === "HR"
+          ? "rgba(255,104,41,0.12)"
+          : "rgba(255,255,255,0.92)",
+        border: form.whomToMeet === "HR"
+          ? "1.5px solid rgba(255,104,41,0.6)"
+          : "1.5px solid rgba(61,107,192,0.4)",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.08)"
+      }}
+    >
+      <span className="text-2xl">👩‍💼</span>
+
+      <div className="text-left">
+        <p
+          className="font-body text-sm font-medium"
+          style={{ color: form.whomToMeet === "HR" ? "#FF6829" : "#3D6BC0" }}
+        >
+          HR
+        </p>
+
+        <p
+          className="font-body text-xs"
+          style={{ color: "#3D6BC0", opacity: 0.55 }}
+        >
+          Human Resources
+        </p>
+      </div>
+    </button>
+
+    {/* Filtered Employees */}
+    {filteredEmployees.map((emp) => (
+      <button
+        key={emp.id}
+        onClick={() => update("whomToMeet", emp.id.toString())}
+        className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95"
+        style={{
+          background: form.whomToMeet === emp.id.toString()
+            ? "rgba(255,104,41,0.12)"
+            : "rgba(255,255,255,0.92)",
+          border: form.whomToMeet === emp.id.toString()
+            ? "1.5px solid rgba(255,104,41,0.6)"
+            : "1.5px solid rgba(61,107,192,0.4)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)"
+        }}
+      >
+        <span className="text-2xl">{emp.avatar}</span>
+
+        <div className="text-left">
+          <p
+            className="font-body text-sm font-medium"
+            style={{
+              color: form.whomToMeet === emp.id.toString()
+                ? "#FF6829"
+                : "#3D6BC0"
+            }}
+          >
+            {emp.name}
+          </p>
+
+          <p
+            className="font-body text-xs"
+            style={{ color: "#3D6BC0", opacity: 0.55 }}
+          >
+            {emp.dept}
+          </p>
+        </div>
+      </button>
+    ))}
+
+  </div>
+
+</FormField>
           </div>
         </div>
       )}
@@ -221,6 +409,34 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
       </div>
       {showCamera && <CameraCapture onCapture={(photo) => { update("photo", photo); setShowCamera(false); }} onClose={() => setShowCamera(false)} />}
       {showSuccess && submittedData && <SuccessPopup visitorName={submittedData.visitorName} whomToMeet={submittedData.whomToMeet} onClose={handleSuccessClose} />}
+      {!showCamera && step==1 &&(
+  <Keyboard
+    keyboardRef={(r) => (keyboardRef.current = r)}
+    onKeyPress={(button) => {
+      if (!currentInput) return;
+
+      if (button === "{bksp}") {
+        setForm((prev) => ({
+          ...prev,
+          [currentInput]: prev[currentInput].slice(0, -1)
+        }));
+        return;
+      }
+
+      if (button === "{space}") {
+        button = " ";
+      }
+
+      if (!button.startsWith("{")) {
+        setForm((prev) => ({
+          ...prev,
+          [currentInput]: prev[currentInput] + button
+        }));
+      }
+    }}
+    className="keyboard"
+  />
+)}
     </div>
   );
 }

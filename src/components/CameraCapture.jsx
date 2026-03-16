@@ -10,9 +10,14 @@ export default function CameraCapture({ onCapture, onClose }) {
   const [flash, setFlash] = useState(false);
 
   useEffect(() => {
+  // remove focus from any input so keyboard disappears
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
+
     startCamera();
     return () => stopCamera();
-  }, []);
+``}, []);
 
   const startCamera = async () => {
     try {
