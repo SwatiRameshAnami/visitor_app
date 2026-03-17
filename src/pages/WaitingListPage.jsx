@@ -1,54 +1,33 @@
 import { useState, useEffect } from "react";
 import BackButton from "../components/BackButton";
 import FeedBackFormPage from "./FeedBackFormPage";
-import { getWaitingVisitors, checkOutVisitor } from "../services/apiServices";
 
-export default function WaitingListPage({ onBack }) {
-  const [visitors, setVisitors] = useState([]);
+
+export default function WaitingListPage({ visitors = [], setVisitors, onBack }) {
+  // const [visitors, setVisitors] = useState([]);
   const [exitingId, setExitingId] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [exitedVisitor, setExitedVisitor] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchWaitingList();
-  }, []);
-
-  const fetchWaitingList = async () => {
-    try {
-      const data = await getWaitingVisitors();
-      setVisitors(data);
-    } catch (err) {
-      console.error("Failed to fetch waiting visitors:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  
 
   const handleExitClick = (id) => {
     setConfirmId(id);
   };
 
-  const handleConfirmExit = async (visitor) => {
-    setExitingId(visitor.id);
+  const handleConfirmExit = (visitor) => {
+  setExitingId(visitor.id);
 
-    try {
-      await checkOutVisitor(visitor.id);
-      
-      setTimeout(() => {
-        setVisitors((prev) => prev.filter((v) => v.id !== visitor.id));
-        setExitedVisitor(visitor);
-        setShowFeedback(true);
-        setExitingId(null);
-        setConfirmId(null);
-      }, 500);
-    } catch (err) {
-      console.error("Checkout failed:", err);
-      alert("Failed to check out visitor. Please try again.");
-      setExitingId(null);
-    }
-  };
+  setTimeout(() => {
+    setVisitors((prev) => prev.filter((v) => v.id !== visitor.id));
+    setExitedVisitor(visitor);
+    setShowFeedback(true);
+    setExitingId(null);
+    setConfirmId(null);
+  }, 500);
+};
 
   return (
     <div className="relative w-full h-full min-h-screen flex flex-col overflow-hidden">

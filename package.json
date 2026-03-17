@@ -13,7 +13,8 @@
     "axios": "^1.13.6",
     "axois": "^0.0.1-security",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-simple-keyboard": "^3.8.171"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

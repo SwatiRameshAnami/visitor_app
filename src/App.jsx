@@ -8,34 +8,54 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState("advertisement");
   const [visitors, setVisitors] = useState([]);
 
-  const navigate = useCallback((page) => setCurrentPage(page), []);
+  const navigate = useCallback((page) => {
+    setCurrentPage(page);
+  }, []);
 
   const addVisitor = useCallback((visitor) => {
     const newVisitor = {
       ...visitor,
       id: Date.now(),
-      checkInTime: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      imageURL: visitor.photo || null,
+      checkInTime: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       checkInDate: new Date().toLocaleDateString("en-IN"),
       status: "waiting",
     };
+
     setVisitors((prev) => [...prev, newVisitor]);
   }, []);
 
   const removeVisitor = useCallback((id) => {
     setVisitors((prev) =>
-      prev.map((v) =>
-        v.id === id
-          ? { ...v, status: "exited", exitTime: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }
-          : v
-      ).filter((v) => v.status !== "exited")
+      prev
+        .map((v) =>
+          v.id === id
+            ? {
+                ...v,
+                status: "exited",
+                exitTime: new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+              }
+            : v
+        )
+        .filter((v) => v.status !== "exited")
     );
   }, []);
 
   return (
-<div className="w-screen h-screen overflow-hidden bg-white">
-                  {currentPage === "advertisement" && (
-        <AdvertisementPage onTouch={() => navigate("home")} />
+    <div className="w-screen h-screen overflow-hidden bg-white">
+
+      {currentPage === "advertisement" && (
+        <AdvertisementPage
+          onTouch={() => navigate("home")}
+        />
       )}
+
       {currentPage === "home" && (
         <VisitorHomePage
           onCheckIn={() => navigate("form")}
@@ -44,6 +64,7 @@ export default function App() {
           onIdle={() => navigate("advertisement")}
         />
       )}
+
       {currentPage === "form" && (
         <VisitorFormPage
           onSubmit={(data) => {
@@ -53,13 +74,16 @@ export default function App() {
           onBack={() => navigate("home")}
         />
       )}
+
       {currentPage === "waiting" && (
         <WaitingListPage
           visitors={visitors}
-          onExit={removeVisitor}
+          setVisitors={setVisitors}
           onBack={() => navigate("home")}
         />
       )}
+
     </div>
   );
 }
+

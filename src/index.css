@@ -84,3 +84,8 @@ html, body, #root {
 .corner-btn {
   @apply absolute flex items-center gap-2 px-5 py-3 rounded-xl font-body font-medium text-sm transition-all duration-200 active:scale-95 z-20;
 }
+.keyboard {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
