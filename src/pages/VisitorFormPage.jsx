@@ -4,15 +4,35 @@ import SuccessPopup from "../components/SuccessPopup";
 import BackButton from "../components/BackButton";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
+import axios from "axios";
 
 
-const EMPLOYEES = [
-  { id: 1, name: "Rajendra", dept: "Development", email: "rajendra18raj@gmail.com", phone: "808852627", avatar: "👨‍💼", isHost: true },
-  { id: 2, name: "Kavyashree", dept: "Development", email: "srieekavya992@gmail.com", phone: "9100698162", avatar: "👩‍💼", isHost: true },
-  { id: 3, name: "Swati", dept: "Development", email: "swatianami487@gmail.com", phone: "9110278500", avatar: "👩‍💼", isHost: true },
-  { id: 4, name: "Thejas", dept: "Development", email: "thejasr2003@gmail.com", phone: "8618200459", avatar: "👨‍💼", isHost: true },
-  { id: 5, name: "raaghu", dept: "testing", email: "raaghu2002@gmail.com", phone: "8618200456", avatar: "👨‍💼", isHost: true },
-];
+const EMPLOYEE_MAP = {
+  wizzybox: [
+    { id: 1, name: "Rajendra", dept: "Development", email: "rajendra18raj@gmail.com", phone: "808852627", avatar: "👨‍💼" },
+    { id: 2, name: "Kavyashree", dept: "Development", email: "srieekavya992@gmail.com", phone: "9100698162", avatar: "👩‍💼" },
+    { id: 3, name: "Swati", dept: "Development", email: "swatianami487@gmail.com", phone: "9110278500", avatar: "👩‍💼" },
+    { id: 4, name: "Thejas", dept: "Development", email: "thejasr2003@gmail.com", phone: "8618200459", avatar: "👨‍💼" },
+    { id: 5, name: "Raaghu", dept: "Testing", email: "raaghu2002@gmail.com", phone: "8618200456", avatar: "👨‍💼" },
+  ],
+
+  nammaqa: [
+    { id: 6, name: "Karthik", dept: "Trainer", email: "karthik@email.com", phone: "9000000001", avatar: "👨‍💼" },
+    { id: 7, name: "Anusha", dept: "Trainer", email: "anusha@email.com", phone: "9000000002", avatar: "👩‍💼" },
+    { id: 8, name: "Rahul", dept: "Support", email: "rahul@email.com", phone: "9000000003", avatar: "👨‍💼" },
+    { id: 9, name: "Divya", dept: "Admin", email: "divya@email.com", phone: "9000000004", avatar: "👩‍💼" },
+    { id: 10, name: "Manoj", dept: "Trainer", email: "manoj@email.com", phone: "9000000005", avatar: "👨‍💼" },
+  ],
+
+  default: [ { 
+    id: 0, 
+    name: "HR Team", 
+    dept: "Human Resources", 
+    email: "hr@company.com", 
+    phone: "9000000000", 
+    avatar: "👩‍💼" 
+  }]
+};
 
 const PURPOSE_MAP = {
   nammaqa: ["Training Session", "Course Inquiry", "Enrollment", "Assessment", "Certificate Collection", "Workshop Participation", "Trainer Meeting", "Other"],
@@ -39,80 +59,35 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   const [step, setStep] = useState(1);
   const [availablePurposes, setAvailablePurposes] = useState(PURPOSE_MAP.default);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentInput, setCurrentInput] = useState("visitorName");
-  const [searchLetter, setSearchLetter] = useState("");
-  const [filteredEmployees, setFilteredEmployees] = useState([]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchLetter]);
+  const [EMPLOYEES, setEmployees] = useState(EMPLOYEE_MAP.default);
 
   const keyboardRef = useRef(null);
-
-  useEffect(() => {
-    if (keyboardRef.current) {
-      if (currentInput === "searchLetter") {
-        keyboardRef.current.setInput(searchLetter);
-      } else {
-        keyboardRef.current.setInput(form[currentInput] || "");
-      }
-    }
-  }, [currentInput]);
-
-  useEffect(() => {
-    if (!keyboardRef.current) return;
-
-    if (currentInput === "searchLetter") {
-      keyboardRef.current.setInput(searchLetter);
-    } else {
-      keyboardRef.current.setInput(form[currentInput] || "");
-    }
-  }, [currentInput, form, searchLetter]);
-
-  const onKeyboardChange = (input) => {
-    if (!currentInput) return;
-
-    if (currentInput === "searchLetter") {
-      setSearchLetter(input);
-    } else {
-      setForm((prev) => ({
-        ...prev,
-        [currentInput]: input
-      }));
-    }
-  };
+const [currentInput, setCurrentInput] = useState("");
 
   const update = (key, value) => {
     let formattedValue = value;
 
-    if (key === "company") {
-      const companyKey = value.toLowerCase().trim();
-      if (companyKey.includes("wizzybox")) {
-        formattedValue = "WizzyBox";
-        setAvailablePurposes(PURPOSE_MAP.wizzybox);
-      } else if (companyKey.includes("nammaqa")) {
-        formattedValue = "NammaQa";
-        setAvailablePurposes(PURPOSE_MAP.nammaqa);
-      } else {
-        setAvailablePurposes(PURPOSE_MAP.default);
-      }
+  if (key === "company") {
+    const companyKey = value.toLowerCase().trim();
+
+    if (companyKey.includes("wizzybox")) {
+      formattedValue = "WizzyBox";
+      setAvailablePurposes(PURPOSE_MAP.wizzybox);
+      setEmployees(EMPLOYEE_MAP.wizzybox);
+
+    } else if (companyKey.includes("nammaqa")) {
+      formattedValue = "NammaQa";
+      setAvailablePurposes(PURPOSE_MAP.nammaqa);
+      setEmployees(EMPLOYEE_MAP.nammaqa);
+
+    } else {
+      setAvailablePurposes(PURPOSE_MAP.default);
+      setEmployees(EMPLOYEE_MAP.default);
     }
+  }
 
     setForm((p) => ({ ...p, [key]: formattedValue }));
     setErrors((p) => ({ ...p, [key]: "" }));
-  };
-
-  const handleSearch = () => {
-    if (!searchLetter) {
-      setFilteredEmployees([]);
-      return;
-    }
-
-    const results = EMPLOYEES.filter(emp =>
-      emp.name.toLowerCase().startsWith(searchLetter.toLowerCase())
-    );
-
-   setFilteredEmployees(results);
   };
 
   const validate = () => {
@@ -151,9 +126,13 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   setIsSubmitting(true);
 
   try {
+    // ✅ KEEP ONLY ONE DECLARATION
     const employee = EMPLOYEES.find(
       emp => emp.id === parseInt(form.whomToMeet)
     );
+
+    // 🔹 UPLOAD IMAGE (you missed this)
+    const cloudinaryUrl = await uploadToCloudinary(form.photo);
 
     const payload = {
       visitorName: form.visitorName,
@@ -164,24 +143,22 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
       whomToMeet: employee?.name,
       employeeDept: employee?.dept,
       employeeEmail: employee?.email,
-      photo: form.photo,
-      time: new Date().toLocaleString(),
-      status: "Waiting"
+      imageURL: cloudinaryUrl
     };
 
-    console.log("Visitor Check-in:", payload);
+    console.log("Submitting Payload with Cloudinary URL:", payload);
+    await checkInVisitor(payload);
 
     setSubmittedData(payload);
     setShowSuccess(true);
 
   } catch (err) {
     console.error("Submission Error:", err);
-    alert("Something went wrong while processing the check-in.");
+    alert("Failed to process check-in. Please ensure the camera image is captured and backend is running.");
   } finally {
     setIsSubmitting(false);
   }
 };
-
   const handleSuccessClose = () => {
     setShowSuccess(false);
     onSubmit(submittedData);
@@ -264,111 +241,19 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
               </div>
             </FormField>
             <FormField label="Person to Meet" required error={errors.whomToMeet}>
-
-            <div className="flex flex-col gap-2 mt-1">
-
-    {/* Search Bar */}
-    <div className="flex gap-2 mb-2">
-      <input
-        type="text"
-        placeholder="Search employee name"
-        value={searchLetter}
-        onFocus={() => {
-          setCurrentInput("searchLetter");
-          keyboardRef.current.setInput(searchLetter);
-        }}
-        onChange={(e) => setSearchLetter(e.target.value)}
-        style={inputStyle()}
-      />
-
-      <button
-        onClick={handleSearch}
-        className="px-4 py-2 rounded-xl font-body text-sm font-medium"
-        style={{
-          background: "#FF6829",
-          color: "#ffffff"
-        }}
-      >
-        Search
-      </button>
-    </div>
-
-    {/* HR Card */}
-    <button
-      onClick={() => update("whomToMeet", "HR")}
-      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95"
-      style={{
-        background: form.whomToMeet === "HR"
-          ? "rgba(255,104,41,0.12)"
-          : "rgba(255,255,255,0.92)",
-        border: form.whomToMeet === "HR"
-          ? "1.5px solid rgba(255,104,41,0.6)"
-          : "1.5px solid rgba(61,107,192,0.4)",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.08)"
-      }}
-    >
-      <span className="text-2xl">👩‍💼</span>
-
-      <div className="text-left">
-        <p
-          className="font-body text-sm font-medium"
-          style={{ color: form.whomToMeet === "HR" ? "#FF6829" : "#3D6BC0" }}
-        >
-          HR
-        </p>
-
-        <p
-          className="font-body text-xs"
-          style={{ color: "#3D6BC0", opacity: 0.55 }}
-        >
-          Human Resources
-        </p>
-      </div>
-    </button>
-
-    {/* Filtered Employees */}
-    {filteredEmployees.map((emp) => (
-      <button
-        key={emp.id}
-        onClick={() => update("whomToMeet", emp.id.toString())}
-        className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95"
-        style={{
-          background: form.whomToMeet === emp.id.toString()
-            ? "rgba(255,104,41,0.12)"
-            : "rgba(255,255,255,0.92)",
-          border: form.whomToMeet === emp.id.toString()
-            ? "1.5px solid rgba(255,104,41,0.6)"
-            : "1.5px solid rgba(61,107,192,0.4)",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08)"
-        }}
-      >
-        <span className="text-2xl">{emp.avatar}</span>
-
-        <div className="text-left">
-          <p
-            className="font-body text-sm font-medium"
-            style={{
-              color: form.whomToMeet === emp.id.toString()
-                ? "#FF6829"
-                : "#3D6BC0"
-            }}
-          >
-            {emp.name}
-          </p>
-
-          <p
-            className="font-body text-xs"
-            style={{ color: "#3D6BC0", opacity: 0.55 }}
-          >
-            {emp.dept}
-          </p>
-        </div>
-      </button>
-    ))}
-
-  </div>
-
-</FormField>
+              <div className="flex flex-col gap-2 mt-1">
+                {EMPLOYEES.map((emp) => (
+                  <button key={emp.id} onClick={() => update("whomToMeet", emp.id.toString())} className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95" style={{ background: form.whomToMeet === emp.id.toString() ? "rgba(255,104,41,0.12)" : "rgba(255,255,255,0.92)", border: form.whomToMeet === emp.id.toString() ? "1.5px solid rgba(255,104,41,0.6)" : "1.5px solid rgba(61,107,192,0.4)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
+                    <span className="text-2xl">{emp.avatar}</span>
+                    <div className="text-left">
+                      <p className="font-body text-sm font-medium" style={{ color: form.whomToMeet === emp.id.toString() ? "#FF6829" : "#3D6BC0" }}>{emp.name}</p>
+                      <p className="font-body text-xs" style={{ color: "#3D6BC0", opacity: 0.55 }}>{emp.dept}</p>
+                    </div>
+                    {form.whomToMeet === emp.id.toString() && (<svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6829" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>)}
+                  </button>
+                ))}
+              </div>
+            </FormField>
           </div>
         </div>
       )}
