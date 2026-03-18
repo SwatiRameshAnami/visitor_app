@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://visitor-app-backend.onrender.com/api";
-// const BASE_URL = "http://localhost:8082/api";
+// const BASE_URL = "https://visitor-app-backend.onrender.com/api";
+const BASE_URL = "http://localhost:8082/api";
 
 
 export const checkInVisitor = async (payload) => {

@@ -10,10 +10,9 @@ import axios from "axios";
 const EMPLOYEE_MAP = {
   wizzybox: [
     { id: 1, name: "Rajendra", dept: "Development", email: "rajendra18raj@gmail.com", phone: "808852627", avatar: "👨‍💼" },
-    { id: 2, name: "Kavyashree", dept: "Development", email: "srieekavya992@gmail.com", phone: "9100698162", avatar: "👩‍💼" },
+    { id: 2, name: "Kavyashree", dept: "Development", email: "sreekavya992@gmail.com", phone: "9100698162", avatar: "👩‍💼" },
     { id: 3, name: "Swati", dept: "Development", email: "swatianami487@gmail.com", phone: "9110278500", avatar: "👩‍💼" },
     { id: 4, name: "Thejas", dept: "Development", email: "thejasr2003@gmail.com", phone: "8618200459", avatar: "👨‍💼" },
-    { id: 5, name: "Raaghu", dept: "Testing", email: "raaghu2002@gmail.com", phone: "8618200456", avatar: "👨‍💼" },
   ],
 
   nammaqa: [
@@ -147,8 +146,7 @@ const [currentInput, setCurrentInput] = useState("");
     };
 
     console.log("Submitting Payload with Cloudinary URL:", payload);
-    await checkInVisitor(payload);
-
+   await axios.post("http://localhost:8082/api/visitors/checkin", payload);
     setSubmittedData(payload);
     setShowSuccess(true);
 
