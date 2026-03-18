@@ -59,9 +59,10 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   const [availablePurposes, setAvailablePurposes] = useState(PURPOSE_MAP.default);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [EMPLOYEES, setEmployees] = useState(EMPLOYEE_MAP.default);
+  const [employeeSearch, setEmployeeSearch] = useState("");
 
   const keyboardRef = useRef(null);
-const [currentInput, setCurrentInput] = useState("");
+const [currentInput, setCurrentInput] = useState(null);
 
   const update = (key, value) => {
     let formattedValue = value;
@@ -161,7 +162,9 @@ const [currentInput, setCurrentInput] = useState("");
     setShowSuccess(false);
     onSubmit(submittedData);
   };
-
+const filteredEmployees = EMPLOYEES.filter((emp) =>
+  emp.name.toLowerCase().includes(employeeSearch.toLowerCase())
+).sort((a, b) => a.name.localeCompare(b.name));
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden">
       <BackButton onClick={onBack} />
@@ -190,7 +193,7 @@ const [currentInput, setCurrentInput] = useState("");
                value={form.visitorName}
                onFocus={() =>{ 
                  setCurrentInput("visitorName")
-                 keyboardRef.current.setInput(form.visitorName);
+                 
                 }}
                onChange={(e) => update("visitorName", e.target.value)}
                style={inputStyle(errors.visitorName)}
@@ -217,9 +220,9 @@ const [currentInput, setCurrentInput] = useState("");
                 placeholder="your@email.com (optional)"
                 value={form.email}
                 onFocus={() => {
-                  setCurrentInput("email");
-                  keyboardRef.current.setInput(form.email.com);
-                }}
+  setCurrentInput(null);
+  keyboardRef.current?.setInput(form.email);
+}}
                 onChange={(e) => update("email", e.target.value)}
                 style={inputStyle(errors.email)}
              />
@@ -239,19 +242,66 @@ const [currentInput, setCurrentInput] = useState("");
               </div>
             </FormField>
             <FormField label="Person to Meet" required error={errors.whomToMeet}>
-              <div className="flex flex-col gap-2 mt-1">
-                {EMPLOYEES.map((emp) => (
-                  <button key={emp.id} onClick={() => update("whomToMeet", emp.id.toString())} className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95" style={{ background: form.whomToMeet === emp.id.toString() ? "rgba(255,104,41,0.12)" : "rgba(255,255,255,0.92)", border: form.whomToMeet === emp.id.toString() ? "1.5px solid rgba(255,104,41,0.6)" : "1.5px solid rgba(61,107,192,0.4)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
-                    <span className="text-2xl">{emp.avatar}</span>
-                    <div className="text-left">
-                      <p className="font-body text-sm font-medium" style={{ color: form.whomToMeet === emp.id.toString() ? "#FF6829" : "#3D6BC0" }}>{emp.name}</p>
-                      <p className="font-body text-xs" style={{ color: "#3D6BC0", opacity: 0.55 }}>{emp.dept}</p>
-                    </div>
-                    {form.whomToMeet === emp.id.toString() && (<svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6829" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>)}
-                  </button>
-                ))}
-              </div>
-            </FormField>
+  {/* 🔍 Search Bar */}
+  <input
+    type="text"
+    placeholder="Search employee..."
+    value={employeeSearch}
+    onChange={(e) => setEmployeeSearch(e.target.value)}
+    style={{
+      ...inputStyle(),
+      marginBottom: "8px"
+    }}
+  />
+
+  {/* 👇 Employee List */}
+  <div className="flex flex-col gap-2 mt-1">
+    {filteredEmployees.length === 0 && (
+      <p style={{ color: "#888", fontSize: "12px" }}>No employees found</p>
+    )}
+    {filteredEmployees.map((emp) => (
+      <button
+        key={emp.id}
+        onClick={() => update("whomToMeet", emp.id.toString())}
+        className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 active:scale-95"
+        style={{
+          background:
+            form.whomToMeet === emp.id.toString()
+              ? "rgba(255,104,41,0.12)"
+              : "rgba(255,255,255,0.92)",
+          border:
+            form.whomToMeet === emp.id.toString()
+              ? "1.5px solid rgba(255,104,41,0.6)"
+              : "1.5px solid rgba(61,107,192,0.4)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        }}
+      >
+        <span className="text-2xl">{emp.avatar}</span>
+        <div className="text-left">
+          <p
+            className="font-body text-sm font-medium"
+            style={{
+              color:
+                form.whomToMeet === emp.id.toString()
+                  ? "#FF6829"
+                  : "#3D6BC0",
+            }}
+          >
+            {emp.name}
+          </p>
+          <p className="font-body text-xs" style={{ color: "#3D6BC0", opacity: 0.55 }}>
+            {emp.dept}
+          </p>
+        </div>
+        {form.whomToMeet === emp.id.toString() && (
+          <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6829" strokeWidth="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
+      </button>
+    ))}
+  </div>
+</FormField>
           </div>
         </div>
       )}
@@ -292,34 +342,42 @@ const [currentInput, setCurrentInput] = useState("");
       </div>
       {showCamera && <CameraCapture onCapture={(photo) => { update("photo", photo); setShowCamera(false); }} onClose={() => setShowCamera(false)} />}
       {showSuccess && submittedData && <SuccessPopup visitorName={submittedData.visitorName} whomToMeet={submittedData.whomToMeet} onClose={handleSuccessClose} />}
-      {!showCamera && step==1 &&(
+      {!showCamera && step === 1 && 
+ (currentInput === "visitorName" || currentInput === "phone") && (
   <Keyboard
     keyboardRef={(r) => (keyboardRef.current = r)}
-    onKeyPress={(button) => {
+
+    input={form[currentInput] || ""}
+
+    layout={
+      currentInput === "phone"
+        ? {
+            default: [
+              "1 2 3",
+              "4 5 6",
+              "7 8 9",
+              "0 {bksp}"
+            ]
+          }
+        : undefined
+    }
+
+    onChange={(input) => {
       if (!currentInput) return;
 
-      if (button === "{bksp}") {
-        setForm((prev) => ({
-          ...prev,
-          [currentInput]: prev[currentInput].slice(0, -1)
-        }));
-        return;
-      }
+      // only numbers for phone
+      if (currentInput === "phone" && !/^\d*$/.test(input)) return;
 
-      if (button === "{space}") {
-        button = " ";
-      }
-
-      if (!button.startsWith("{")) {
-        setForm((prev) => ({
-          ...prev,
-          [currentInput]: prev[currentInput] + button
-        }));
-      }
+      setForm((prev) => ({
+        ...prev,
+        [currentInput]: input,
+      }));
     }}
+
     className="keyboard"
   />
 )}
+
     </div>
   );
 }

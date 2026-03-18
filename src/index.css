@@ -89,3 +89,13 @@ html, body, #root {
   bottom: 0;
   width: 100%;
 }
+.keyboard {
+  position: fixed !important;
+  bottom: 0;
+  width: 100%;
+  z-index: 9999 !important;
+}
+
+.hg-theme-default {
+  z-index: 9999 !important;
+}
