@@ -7,31 +7,7 @@ import "react-simple-keyboard/build/css/index.css";
 import axios from "axios";
 
 
-const EMPLOYEE_MAP = {
-  wizzybox: [
-    { id: 1, name: "Rajendra", dept: "Development", email: "rajendra18raj@gmail.com", phone: "808852627", avatar: "👨‍💼" },
-    { id: 2, name: "Kavyashree", dept: "Development", email: "sreekavya992@gmail.com", phone: "9100698162", avatar: "👩‍💼" },
-    { id: 3, name: "Swati", dept: "Development", email: "swatianami487@gmail.com", phone: "9110278500", avatar: "👩‍💼" },
-    { id: 4, name: "Thejas", dept: "Development", email: "thejasr2003@gmail.com", phone: "8618200459", avatar: "👨‍💼" },
-  ],
 
-  nammaqa: [
-    { id: 6, name: "Karthik", dept: "Trainer", email: "karthik@email.com", phone: "9000000001", avatar: "👨‍💼" },
-    { id: 7, name: "Anusha", dept: "Trainer", email: "anusha@email.com", phone: "9000000002", avatar: "👩‍💼" },
-    { id: 8, name: "Rahul", dept: "Support", email: "rahul@email.com", phone: "9000000003", avatar: "👨‍💼" },
-    { id: 9, name: "Divya", dept: "Admin", email: "divya@email.com", phone: "9000000004", avatar: "👩‍💼" },
-    { id: 10, name: "Manoj", dept: "Trainer", email: "manoj@email.com", phone: "9000000005", avatar: "👨‍💼" },
-  ],
-
-  default: [ { 
-    id: 0, 
-    name: "HR Team", 
-    dept: "Human Resources", 
-    email: "hr@company.com", 
-    phone: "9000000000", 
-    avatar: "👩‍💼" 
-  }]
-};
 
 const PURPOSE_MAP = {
   nammaqa: ["Training Session", "Course Inquiry", "Enrollment", "Assessment", "Certificate Collection", "Workshop Participation", "Trainer Meeting", "Other"],
@@ -58,12 +34,44 @@ export default function VisitorFormPage({ onSubmit, onBack }) {
   const [step, setStep] = useState(1);
   const [availablePurposes, setAvailablePurposes] = useState(PURPOSE_MAP.default);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [EMPLOYEES, setEmployees] = useState(EMPLOYEE_MAP.default);
+  const [EMPLOYEES, setEmployees] = useState([
+  {
+    id: 0,
+    name: "HR Team",
+    department: "Human Resources",
+    email: "hr@company.com",
+    phone: "0000000000",
+    avatar: "👩‍💼"
+  }
+]);
   const [employeeSearch, setEmployeeSearch] = useState("");
 
   const keyboardRef = useRef(null);
 const [currentInput, setCurrentInput] = useState(null);
+useEffect(() => {
+  const fetchEmployees = async () => {
+    try {
+      const res = await axios.get("http://localhost:8082/api/employees");
 
+      setEmployees([
+        {
+          id: 0,
+          name: "HR Team",
+          department: "Human Resources",
+          email: "hr@company.com",
+          phone: "0000000000",
+          avatar: "👩‍💼"
+        },
+        ...res.data
+      ]);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchEmployees();
+}, []);
   const update = (key, value) => {
     let formattedValue = value;
 
@@ -71,19 +79,16 @@ const [currentInput, setCurrentInput] = useState(null);
     const companyKey = value.toLowerCase().trim();
 
     if (companyKey.includes("wizzybox")) {
-      formattedValue = "WizzyBox";
-      setAvailablePurposes(PURPOSE_MAP.wizzybox);
-      setEmployees(EMPLOYEE_MAP.wizzybox);
+  formattedValue = "WizzyBox";
+  setAvailablePurposes(PURPOSE_MAP.wizzybox);
 
-    } else if (companyKey.includes("nammaqa")) {
-      formattedValue = "NammaQa";
-      setAvailablePurposes(PURPOSE_MAP.nammaqa);
-      setEmployees(EMPLOYEE_MAP.nammaqa);
+} else if (companyKey.includes("nammaqa")) {
+  formattedValue = "NammaQa";
+  setAvailablePurposes(PURPOSE_MAP.nammaqa);
 
-    } else {
-      setAvailablePurposes(PURPOSE_MAP.default);
-      setEmployees(EMPLOYEE_MAP.default);
-    }
+} else {
+  setAvailablePurposes(PURPOSE_MAP.default);
+}
   }
 
     setForm((p) => ({ ...p, [key]: formattedValue }));
@@ -141,7 +146,7 @@ const [currentInput, setCurrentInput] = useState(null);
       company: form.company,
       purpose: form.purpose,
       whomToMeet: employee?.name,
-      employeeDept: employee?.dept,
+      employeeDept: employee?.department,
       employeeEmail: employee?.email,
       imageURL: cloudinaryUrl
     };
@@ -162,9 +167,12 @@ const [currentInput, setCurrentInput] = useState(null);
     setShowSuccess(false);
     onSubmit(submittedData);
   };
-const filteredEmployees = EMPLOYEES.filter((emp) =>
-  emp.name.toLowerCase().includes(employeeSearch.toLowerCase())
-).sort((a, b) => a.name.localeCompare(b.name));
+const filteredEmployees =
+  employeeSearch.trim() === ""
+    ? EMPLOYEES.filter(emp => emp.id === 0) // show only HR
+    : EMPLOYEES.filter(emp =>
+        emp.name.toLowerCase().includes(employeeSearch.toLowerCase())
+      );
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden">
       <BackButton onClick={onBack} />
@@ -290,7 +298,7 @@ const filteredEmployees = EMPLOYEES.filter((emp) =>
             {emp.name}
           </p>
           <p className="font-body text-xs" style={{ color: "#3D6BC0", opacity: 0.55 }}>
-            {emp.dept}
+            {emp.department}
           </p>
         </div>
         {form.whomToMeet === emp.id.toString() && (
