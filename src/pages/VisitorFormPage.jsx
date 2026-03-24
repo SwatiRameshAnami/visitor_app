@@ -152,7 +152,8 @@ useEffect(() => {
     };
 
     console.log("Submitting Payload with Cloudinary URL:", payload);
-   await axios.post("http://localhost:8082/api/visitors/checkin", payload);
+    await checkInVisitor(payload);
+
     setSubmittedData(payload);
     setShowSuccess(true);
 
@@ -228,7 +229,7 @@ const filteredEmployees =
                 placeholder="your@email.com (optional)"
                 value={form.email}
                 onFocus={() => {
-  setCurrentInput(null);
+  setCurrentInput("email");
   keyboardRef.current?.setInput(form.email);
 }}
                 onChange={(e) => update("email", e.target.value)}
@@ -351,7 +352,7 @@ const filteredEmployees =
       {showCamera && <CameraCapture onCapture={(photo) => { update("photo", photo); setShowCamera(false); }} onClose={() => setShowCamera(false)} />}
       {showSuccess && submittedData && <SuccessPopup visitorName={submittedData.visitorName} whomToMeet={submittedData.whomToMeet} onClose={handleSuccessClose} />}
       {!showCamera && step === 1 && 
- (currentInput === "visitorName" || currentInput === "phone") && (
+ (currentInput === "visitorName" || currentInput === "phone" || currentInput === "email")&&(
   <Keyboard
     keyboardRef={(r) => (keyboardRef.current = r)}
 
